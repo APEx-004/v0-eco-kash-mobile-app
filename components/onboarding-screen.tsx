@@ -1,6 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import type React from "react"
+
+import { useState } from "react"
 
 interface OnboardingScreenProps {
   step: number
@@ -54,6 +56,35 @@ const onboardingData = [
 ]
 
 export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenProps) {
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+
+    if (isLeftSwipe) {
+      if (step === onboardingData.length - 1) {
+        onComplete()
+      } else {
+        onNext()
+      }
+    }
+  }
+
   const currentStep = onboardingData[step]
 
   if (!currentStep) {
@@ -62,8 +93,14 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
   }
 
   return (
-    <div className="h-full flex flex-col items-center justify-between p-8 text-center">
-      <div className="flex-1 flex flex-col items-center justify-center gap-8">
+    <div
+      className="h-full flex flex-col items-center justify-between p-8 pb-12 text-center"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-8 max-w-md">
         <div className="animate-fade-in-up">{currentStep.icon}</div>
         <div className="space-y-4 animate-fade-in-up animation-delay-200">
           <h1 className="text-3xl font-bold text-balance leading-tight text-foreground">{currentStep.title}</h1>
@@ -71,22 +108,19 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
         </div>
       </div>
 
-      <div className="w-full space-y-4">
-        <div className="flex justify-center gap-2 mb-6">
+      {/* Bottom Section with Progress */}
+      <div className="w-full space-y-6 max-w-md">
+        {/* Progress Indicators */}
+        <div className="flex justify-center gap-2">
           {onboardingData.map((_, index) => (
             <div
               key={index}
-              className={`h-2 rounded-full transition-all ${index === step ? "w-8 bg-primary" : "w-2 bg-border"}`}
+              className={`h-2 rounded-full transition-all duration-300 ${index === step ? "w-8 bg-primary" : "w-2 bg-border"}`}
             />
           ))}
         </div>
-        <Button
-          onClick={step === onboardingData.length - 1 ? onComplete : onNext}
-          className="w-full h-14 text-lg font-semibold rounded-2xl"
-          size="lg"
-        >
-          {step === onboardingData.length - 1 ? "Get Started" : "Continue"}
-        </Button>
+
+        <p className="text-sm text-muted-foreground">Swipe left to continue</p>
       </div>
     </div>
   )

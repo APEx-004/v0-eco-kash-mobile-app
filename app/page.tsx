@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { OnboardingScreen } from "@/components/onboarding-screen"
+import { SignupScreen } from "@/components/signup-screen"
+import { LoginScreen } from "@/components/login-screen"
 import { HomeScreen } from "@/components/home-screen"
 import { DepositScreen } from "@/components/deposit-screen"
 import { CollectionScreen } from "@/components/collection-screen"
@@ -10,14 +12,68 @@ import { ImpactScreen } from "@/components/impact-screen"
 import { EducationScreen } from "@/components/education-screen"
 import { ProfileScreen } from "@/components/profile-screen"
 
+type UserData = {
+  fullName: string
+  email: string
+  phone: string
+  location: string
+} | null
+
 export default function EcoKashApp() {
   const [currentScreen, setCurrentScreen] = useState<
-    "onboarding" | "home" | "deposit" | "collection" | "wallet" | "impact" | "education" | "profile"
+    | "onboarding"
+    | "signup"
+    | "login"
+    | "home"
+    | "deposit"
+    | "collection"
+    | "wallet"
+    | "impact"
+    | "education"
+    | "profile"
   >("onboarding")
   const [onboardingStep, setOnboardingStep] = useState(0)
+  const [userData, setUserData] = useState<UserData>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const handleOnboardingComplete = () => {
+    setCurrentScreen("signup")
+  }
+
+  const handleSignup = (data: {
+    fullName: string
+    email: string
+    phone: string
+    password: string
+    location: string
+  }) => {
+    setUserData({
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      location: data.location,
+    })
+    setIsAuthenticated(true)
     setCurrentScreen("home")
+  }
+
+  const handleLogin = (email: string, password: string) => {
+    // In a real app, you would validate credentials here
+    // For demo purposes, we'll use mock data
+    setUserData({
+      fullName: "Demo User",
+      email: email,
+      phone: "+232 XX XXX XXXX",
+      location: "Freetown, Sierra Leone",
+    })
+    setIsAuthenticated(true)
+    setCurrentScreen("home")
+  }
+
+  const handleLogout = () => {
+    setUserData(null)
+    setIsAuthenticated(false)
+    setCurrentScreen("login")
   }
 
   const handleNavigate = (screen: typeof currentScreen) => {
@@ -25,14 +81,34 @@ export default function EcoKashApp() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md h-[812px] bg-card rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
+      <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10">
         {/* Status Bar */}
-        <div className="absolute top-0 left-0 right-0 h-12 bg-card z-50 flex items-center justify-between px-8 pt-2">
-          <span className="text-xs font-medium text-foreground">9:41</span>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-3 border border-foreground/30 rounded-sm relative">
-              <div className="absolute inset-0.5 bg-foreground rounded-[1px]" />
+        <div className="absolute top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-8 pt-2 text-[rgba(216,237,211,1)] bg-[rgba(216,237,211,1)]">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-foreground">9:41</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            {/* Signal Strength */}
+            <svg className="w-4 h-3.5 text-[rgba(22,22,22,1)]" viewBox="0 0 16 14" fill="currentColor">
+              <circle cx="2" cy="12" r="1.5" />
+              <circle cx="6" cy="10" r="1.5" />
+              <circle cx="10" cy="7" r="1.5" />
+              <circle cx="14" cy="4" r="1.5" />
+            </svg>
+            {/* WiFi */}
+            <svg className="w-4 h-3.5 text-[rgba(12,12,12,1)]" viewBox="0 0 16 12" fill="currentColor">
+              <path
+                className="bg-[rgba(7,7,7,1)]"
+                d="M8 12c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3.74-3.74c-.41-.41-1.08-.41-1.49 0-.2.2-.3.46-.3.74 0 .28.1.54.3.74.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49zm2.83-2.83c-1.56-1.56-4.1-1.56-5.66 0-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0zm2.83-2.83c-3.12-3.12-8.19-3.12-11.31 0-1.56 1.56-1.56 4.1 0 5.66.78.78 2.05.78 2.83 0 1.56-1.56 1.56-4.1 0-5.66z"
+              />
+            </svg>
+            {/* Battery */}
+            <div className="flex items-center gap-0.5">
+              <div className="w-6 h-3 border-2 border-foreground rounded-sm relative">
+                <div className="absolute inset-0.5 bg-foreground rounded-[1px]" />
+              </div>
+              <div className="w-0.5 h-1.5 bg-foreground rounded-r-sm" />
             </div>
           </div>
         </div>
@@ -46,90 +122,83 @@ export default function EcoKashApp() {
               onComplete={handleOnboardingComplete}
             />
           )}
-          {currentScreen === "home" && <HomeScreen onNavigate={handleNavigate} />}
+          {currentScreen === "signup" && (
+            <SignupScreen onSignup={handleSignup} onSwitchToLogin={() => setCurrentScreen("login")} />
+          )}
+          {currentScreen === "login" && (
+            <LoginScreen onLogin={handleLogin} onSwitchToSignup={() => setCurrentScreen("signup")} />
+          )}
+          {currentScreen === "home" && <HomeScreen onNavigate={handleNavigate} userData={userData} />}
           {currentScreen === "deposit" && <DepositScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "collection" && <CollectionScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "wallet" && <WalletScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "impact" && <ImpactScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "education" && <EducationScreen onBack={() => setCurrentScreen("home")} />}
-          {currentScreen === "profile" && <ProfileScreen onBack={() => setCurrentScreen("home")} />}
+          {currentScreen === "profile" && (
+            <ProfileScreen onBack={() => setCurrentScreen("home")} userData={userData} onLogout={handleLogout} />
+          )}
         </div>
 
-        {/* Bottom Navigation - Only show after onboarding */}
-        {currentScreen !== "onboarding" && currentScreen !== "deposit" && currentScreen !== "collection" && (
-          <div className="absolute bottom-0 left-0 right-0 h-20 bg-card border-t border-border flex items-center justify-around px-4 pb-4">
-            <button
-              onClick={() => setCurrentScreen("home")}
-              className={`flex flex-col items-center gap-1 ${currentScreen === "home" ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
-              <span className="text-xs font-medium">Home</span>
-            </button>
-            <button
-              onClick={() => setCurrentScreen("wallet")}
-              className={`flex flex-col items-center gap-1 ${currentScreen === "wallet" ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
-              <span className="text-xs font-medium">Wallet</span>
-            </button>
-            <button
-              onClick={() => setCurrentScreen("impact")}
-              className={`flex flex-col items-center gap-1 ${currentScreen === "impact" ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-              <span className="text-xs font-medium">Impact</span>
-            </button>
-            <button
-              onClick={() => setCurrentScreen("education")}
-              className={`flex flex-col items-center gap-1 ${currentScreen === "education" ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-              <span className="text-xs font-medium">Learn</span>
-            </button>
-            <button
-              onClick={() => setCurrentScreen("profile")}
-              className={`flex flex-col items-center gap-1 ${currentScreen === "profile" ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              <span className="text-xs font-medium">Profile</span>
-            </button>
-          </div>
-        )}
+        {/* Bottom Navigation - Only show after authentication */}
+        {isAuthenticated &&
+          currentScreen !== "onboarding" &&
+          currentScreen !== "signup" &&
+          currentScreen !== "login" &&
+          currentScreen !== "deposit" &&
+          currentScreen !== "collection" && (
+            <div className="absolute bottom-0 left-0 right-0 h-20 border-t border-border flex items-center justify-around px-4 pb-4 bg-[rgba(217,237,212,1)]">
+              <button
+                onClick={() => setCurrentScreen("home")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "home" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                  <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+                </svg>
+                <span className="text-xs font-medium font-sans">Home</span>
+              </button>
+              <button
+                onClick={() => setCurrentScreen("wallet")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "wallet" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.273 5.625A4.483 4.483 0 015.25 4.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0018.75 3H5.25a3 3 0 00-2.977 2.625zM2.273 8.625A4.483 4.483 0 015.25 7.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0018.75 6H5.25a3 3 0 00-2.977 2.625zM5.25 9a3 3 0 00-3 3v6a3 3 0 003 3h13.5a3 3 0 003-3v-6a3 3 0 00-3-3H15a.75.75 0 00-.75.75 2.25 2.25 0 01-4.5 0A.75.75 0 009 9H5.25z" />
+                </svg>
+                <span className="text-xs font-medium font-sans">Wallet</span>
+              </button>
+              <button
+                onClick={() => setCurrentScreen("impact")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "impact" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
+                </svg>
+                <span className="text-xs font-medium font-sans">Impact</span>
+              </button>
+              <button
+                onClick={() => setCurrentScreen("education")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "education" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
+                </svg>
+                <span className="text-xs font-medium font-sans">Learn</span>
+              </button>
+              <button
+                onClick={() => setCurrentScreen("profile")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "profile" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-xs font-medium font-sans">Profile</span>
+              </button>
+            </div>
+          )}
       </div>
     </div>
   )

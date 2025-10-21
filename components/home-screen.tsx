@@ -1,121 +1,129 @@
 "use client"
-
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useState } from "react"
 
 interface HomeScreenProps {
   onNavigate: (screen: "deposit" | "collection" | "wallet" | "impact" | "education" | "profile") => void
+  userData?: {
+    fullName: string
+    email: string
+    phone: string
+    location: string
+  } | null
 }
 
-export function HomeScreen({ onNavigate }: HomeScreenProps) {
+export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
+  const [showNotifications, setShowNotifications] = useState(false)
+
+  const firstName = userData?.fullName.split(" ")[0] || "User"
+
   return (
-    <div className="h-full overflow-y-auto pb-24">
+    <div className="h-full overflow-y-auto pb-24 text-[rgba(217,237,212,1)] bg-[rgba(216,237,211,1)] text-left">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-6 rounded-b-[2rem]">
+      <div className="p-6 text-left">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-sm opacity-90">Welcome back,</p>
-            <h2 className="text-2xl font-bold">Aminata</h2>
+            <p className="font-semibold text-[rgba(7,7,7,1)] font-sans text-3xl">Kushe!</p>
+            <p className="font-medium text-[rgba(7,7,7,1)] font-sans text-xl">{firstName}</p>
           </div>
-          <button className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button className="relative" onClick={() => setShowNotifications(!showNotifications)}>
+            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path
+                className="text-card-foreground leading-10"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
               />
             </svg>
+            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-accent rounded-full border-2 border-background"></span>
           </button>
         </div>
 
-        {/* Balance Card */}
-        <Card className="bg-card text-card-foreground p-6 rounded-3xl shadow-lg">
-          <p className="text-sm text-muted-foreground mb-2">Total Balance</p>
-          <div className="flex items-baseline gap-2 mb-4">
-            <h3 className="text-4xl font-bold">$24.50</h3>
-            <span className="text-success text-sm font-medium">+12.5%</span>
-          </div>
-          <div className="flex items-center gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Recyclables</p>
-              <p className="font-semibold">47 items</p>
+        {/* Wallet Balance Card */}
+        <Card className="relative overflow-hidden backdrop-blur p-6 rounded-3xl border-0 w-[358px] h-[209px] mx-auto">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-90"
+            style={{ backgroundImage: "url('/images/blockchain-bg.jpg')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 text-center py-0 border-0" />
+
+          {/* Recycling Icon */}
+
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-white/80">Total Balance</p>
+                <p className="text-4xl font-bold text-white mt-2">$24.50</p>
+              </div>
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30">
+                <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
+                </svg>
+              </div>
             </div>
-            <div className="h-8 w-px bg-border" />
-            <div>
-              <p className="text-muted-foreground">This Month</p>
-              <p className="font-semibold">$8.20</p>
+            <div className="grid grid-cols-2 gap-6 pt-4 border-t border-white/20">
+              <div>
+                <p className="text-xs text-white/70 mb-1">Recyclables</p>
+                <p className="text-xl font-bold text-white">142 items</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/70 mb-1">This Month</p>
+                <p className="text-xl font-bold text-background">+$8.30</p>
+              </div>
             </div>
           </div>
         </Card>
-      </div>
 
-      {/* Quick Actions */}
-      <div className="p-6 space-y-4">
-        <h3 className="text-lg font-semibold">Quick Actions</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            onClick={() => onNavigate("deposit")}
-            className="h-32 flex-col gap-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-3xl"
-          >
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="font-semibold">Deposit Now</span>
-          </Button>
-          <Button
-            onClick={() => onNavigate("collection")}
-            className="h-32 flex-col gap-3 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-3xl"
-          >
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="font-semibold">Request Pickup</span>
-          </Button>
-        </div>
-      </div>
+        {/* Quick Actions */}
+        <div className="mb-6 mt-7 flex justify-center">
+          <div className="grid grid-cols-3 gap-3 text-left">
+            {/* Transfer */}
+            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                />
+              </svg>
+              <span className="text-xs text-foreground font-black">Transfer</span>
+            </button>
 
-      {/* Recent Activity */}
-      <div className="px-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Recent Activity</h3>
-          <button className="text-sm text-primary font-medium">View All</button>
-        </div>
-        <div className="space-y-3">
-          {[
-            { type: "Plastic Bottles", amount: "+$2.50", count: "5 items", time: "2 hours ago", icon: "♻️" },
-            { type: "Aluminum Cans", amount: "+$1.80", count: "12 items", time: "1 day ago", icon: "🥫" },
-            { type: "PET Bottles", amount: "+$3.20", count: "8 items", time: "2 days ago", icon: "🍾" },
-          ].map((activity, index) => (
-            <Card key={index} className="p-4 rounded-2xl">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">
-                  {activity.icon}
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold font-mono">{activity.type}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {activity.count} • {activity.time}
-                  </p>
-                </div>
-                <p className="font-bold text-success">{activity.amount}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
+            {/* Payments */}
+            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+              <span className="text-xs text-foreground font-black">Payments</span>
+            </button>
 
-      {/* Find RVM */}
-      <div className="p-6">
-        <Card className="p-6 rounded-3xl bg-muted">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center">
-              <svg className="w-6 h-6 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Charity */}
+            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              <span className="text-xs text-foreground font-black">Charity</span>
+            </button>
+
+            {/* RVM Location */}
+            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -129,17 +137,56 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold">Find RVM Near You</p>
-              <p className="text-sm text-muted-foreground">3 machines within 2km</p>
-            </div>
-            <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+              <span className="text-xs text-foreground text-center leading-tight font-black">RVM Location</span>
+            </button>
           </div>
-        </Card>
+        </div>
       </div>
+
+      {/* Find RVM */}
+
+      {showNotifications && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowNotifications(false)} />
+          {/* Notifications Panel */}
+          <div className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-background z-50 shadow-2xl overflow-y-auto animate-in slide-in-from-right">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Notifications</h2>
+                <button onClick={() => setShowNotifications(false)}>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { type: "Plastic Bottles", amount: "+$2.50", count: "5 items", time: "2 hours ago", icon: "♻️" },
+                  { type: "Aluminum Cans", amount: "+$1.80", count: "12 items", time: "1 day ago", icon: "🥫" },
+                  { type: "PET Bottles", amount: "+$3.20", count: "8 items", time: "2 days ago", icon: "🍾" },
+                ].map((activity, index) => (
+                  <Card key={index} className="p-4 rounded-2xl">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">
+                        {activity.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold font-mono">{activity.type}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {activity.count} • {activity.time}
+                        </p>
+                      </div>
+                      <p className="font-bold text-success">{activity.amount}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
