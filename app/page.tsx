@@ -11,6 +11,8 @@ import { WalletScreen } from "@/components/wallet-screen"
 import { ImpactScreen } from "@/components/impact-screen"
 import { EducationScreen } from "@/components/education-screen"
 import { ProfileScreen } from "@/components/profile-screen"
+import { CharityScreen } from "@/components/charity-screen"
+import { TransferScreen } from "@/components/transfer-screen"
 
 type UserData = {
   fullName: string
@@ -31,10 +33,13 @@ export default function EcoKashApp() {
     | "impact"
     | "education"
     | "profile"
+    | "charity"
+    | "transfer"
   >("onboarding")
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [userData, setUserData] = useState<UserData>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [walletBalance, setWalletBalance] = useState(24.5)
 
   const handleOnboardingComplete = () => {
     setCurrentScreen("signup")
@@ -80,9 +85,17 @@ export default function EcoKashApp() {
     setCurrentScreen(screen)
   }
 
+  const handleDonation = (amount: number, charityName: string) => {
+    setWalletBalance((prev) => prev - amount)
+  }
+
+  const handleTransfer = (amount: number) => {
+    setWalletBalance((prev) => prev - amount)
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
-      <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10">
+      <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10 bg-[rgba(217,237,212,1)]">
         {/* Status Bar */}
         <div className="absolute top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-8 pt-2 text-[rgba(216,237,211,1)] bg-[rgba(216,237,211,1)]">
           <div className="flex items-center gap-1.5">
@@ -128,7 +141,9 @@ export default function EcoKashApp() {
           {currentScreen === "login" && (
             <LoginScreen onLogin={handleLogin} onSwitchToSignup={() => setCurrentScreen("signup")} />
           )}
-          {currentScreen === "home" && <HomeScreen onNavigate={handleNavigate} userData={userData} />}
+          {currentScreen === "home" && (
+            <HomeScreen onNavigate={handleNavigate} userData={userData} walletBalance={walletBalance} />
+          )}
           {currentScreen === "deposit" && <DepositScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "collection" && <CollectionScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "wallet" && <WalletScreen onBack={() => setCurrentScreen("home")} />}
@@ -136,6 +151,20 @@ export default function EcoKashApp() {
           {currentScreen === "education" && <EducationScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "profile" && (
             <ProfileScreen onBack={() => setCurrentScreen("home")} userData={userData} onLogout={handleLogout} />
+          )}
+          {currentScreen === "charity" && (
+            <CharityScreen
+              onBack={() => setCurrentScreen("home")}
+              walletBalance={walletBalance}
+              onDonate={handleDonation}
+            />
+          )}
+          {currentScreen === "transfer" && (
+            <TransferScreen
+              onBack={() => setCurrentScreen("home")}
+              walletBalance={walletBalance}
+              onTransfer={handleTransfer}
+            />
           )}
         </div>
 
@@ -145,7 +174,9 @@ export default function EcoKashApp() {
           currentScreen !== "signup" &&
           currentScreen !== "login" &&
           currentScreen !== "deposit" &&
-          currentScreen !== "collection" && (
+          currentScreen !== "collection" &&
+          currentScreen !== "charity" &&
+          currentScreen !== "transfer" && (
             <div className="absolute bottom-0 left-0 right-0 h-20 border-t border-border flex items-center justify-around px-4 pb-4 bg-[rgba(217,237,212,1)]">
               <button
                 onClick={() => setCurrentScreen("home")}

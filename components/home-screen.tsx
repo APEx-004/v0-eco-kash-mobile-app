@@ -3,16 +3,19 @@ import { Card } from "@/components/ui/card"
 import { useState } from "react"
 
 interface HomeScreenProps {
-  onNavigate: (screen: "deposit" | "collection" | "wallet" | "impact" | "education" | "profile") => void
+  onNavigate: (
+    screen: "deposit" | "collection" | "wallet" | "impact" | "education" | "profile" | "charity" | "transfer",
+  ) => void
   userData?: {
     fullName: string
     email: string
     phone: string
     location: string
   } | null
+  walletBalance: number
 }
 
-export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
+export function HomeScreen({ onNavigate, userData, walletBalance }: HomeScreenProps) {
   const [showNotifications, setShowNotifications] = useState(false)
 
   const firstName = userData?.fullName.split(" ")[0] || "User"
@@ -53,7 +56,7 @@ export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-white/80">Total Balance</p>
-                <p className="text-4xl font-bold text-white mt-2">$24.50</p>
+                <p className="text-4xl font-bold text-white mt-2">${walletBalance.toFixed(2)}</p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +86,10 @@ export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
         <div className="mb-6 mt-7 flex justify-center">
           <div className="grid grid-cols-3 gap-3 text-left">
             {/* Transfer */}
-            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+            <button
+              onClick={() => onNavigate("transfer")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
               <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -108,8 +114,11 @@ export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
               <span className="text-xs text-foreground font-black">Payments</span>
             </button>
 
-            {/* Charity */}
-            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+            {/* Charity - Added onClick handler to navigate to charity screen */}
+            <button
+              onClick={() => onNavigate("charity")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
               <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -150,10 +159,10 @@ export function HomeScreen({ onNavigate, userData }: HomeScreenProps) {
           {/* Backdrop */}
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowNotifications(false)} />
           {/* Notifications Panel */}
-          <div className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-background z-50 shadow-2xl overflow-y-auto animate-in slide-in-from-right">
+          <div className="fixed top-0 right-0 bottom-0 w-full max-w-md z-50 shadow-2xl overflow-y-auto animate-in slide-in-from-right bg-[rgba(217,237,212,1)]">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">Notifications</h2>
+                <h2 className="text-2xl font-bold text-sidebar-foreground">Notifications</h2>
                 <button onClick={() => setShowNotifications(false)}>
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

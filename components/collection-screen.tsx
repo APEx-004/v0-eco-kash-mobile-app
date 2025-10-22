@@ -41,14 +41,14 @@ export function CollectionScreen({ onBack }: CollectionScreenProps) {
             <h2 className="text-3xl font-bold">Request Submitted!</h2>
             <p className="text-muted-foreground text-pretty">
               {
-                "We'll collect your recyclables on the scheduled date. You'll receive a notification when the collector is on the way."
+                "Thank you for your request. We collect by intervals of every two weeks. You'll receive a notification before the next scheduled collection."
               }
             </p>
           </div>
           <Card className="w-full p-6 rounded-3xl space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Collection Date</span>
-              <span className="font-semibold">Tomorrow, 10:00 AM</span>
+              <span className="text-muted-foreground">Next Collection</span>
+              <span className="font-semibold">In 5 days</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Estimated Items</span>
@@ -115,26 +115,6 @@ export function CollectionScreen({ onBack }: CollectionScreenProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Preferred Collection Date</label>
-            <Input type="date" className="h-14 rounded-2xl" />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Preferred Time</label>
-            <div className="grid grid-cols-3 gap-3">
-              {["Morning", "Afternoon", "Evening"].map((time) => (
-                <label
-                  key={time}
-                  className="flex items-center justify-center p-4 rounded-2xl border border-border cursor-pointer hover:border-primary transition-colors"
-                >
-                  <input type="radio" name="time" className="sr-only" />
-                  <span className="text-sm font-medium">{time}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
             <label className="text-sm font-medium">Additional Notes (Optional)</label>
             <textarea
               placeholder="Any special instructions for the collector..."
@@ -159,14 +139,14 @@ export function CollectionScreen({ onBack }: CollectionScreenProps) {
               </svg>
               <p className="text-sm text-muted-foreground">
                 {
-                  "Our collector will arrive at your scheduled time. Please have your recyclables sorted and ready for pickup."
+                  "We collect by intervals of every two weeks. Please have your recyclables sorted and ready for the next scheduled collection."
                 }
               </p>
             </div>
           </Card>
 
           <Button type="submit" className="w-full h-14 text-lg font-semibold rounded-2xl" size="lg">
-            Schedule Collection
+            Submit Request
           </Button>
         </form>
       </div>
