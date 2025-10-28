@@ -2,8 +2,11 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useState } from "react"
-import { ServiceRequestScreen } from "@/components/service-request-screen" // Import ServiceRequestScreen
+import { ServiceRequestScreen } from "@/components/service-request-screen"
+import { Eye, EyeOff } from "lucide-react"
 
 interface ProfileScreenProps {
   onBack: () => void
@@ -14,12 +17,55 @@ interface ProfileScreenProps {
     location: string
   } | null
   onLogout: () => void
+  onNavigateToServiceRequest: () => void
 }
 
-export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps) {
+export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceRequest }: ProfileScreenProps) {
   const [activeScreen, setActiveScreen] = useState<
-    "main" | "service-request" | "personal-info" | "notifications" | "security" | "kyc" | "help" | "about"
+    | "main"
+    | "personal-info"
+    | "notifications"
+    | "security"
+    | "kyc"
+    | "help"
+    | "about"
+    | "change-password"
+    | "contact-support"
+    | "report-issue"
+    | "terms"
+    | "privacy"
   >("main")
+
+  const [notificationSettings, setNotificationSettings] = useState({
+    transactions: true,
+    recycling: true,
+    promotions: false,
+    updates: true,
+  })
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const [kycData, setKycData] = useState({
+    idType: "",
+    idNumber: "",
+    dateOfBirth: "",
+  })
+
+  const [supportMessage, setSupportMessage] = useState("")
+  const [issueReport, setIssueReport] = useState({
+    category: "",
+    description: "",
+  })
+
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
 
   const getInitials = (name: string) => {
     return name
@@ -30,14 +76,616 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
       .slice(0, 2)
   }
 
+  const handlePasswordChange = () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("New passwords do not match!")
+      return
+    }
+    if (passwordData.newPassword.length < 6) {
+      alert("Password must be at least 6 characters!")
+      return
+    }
+    setSuccessMessage("Password changed successfully!")
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      setActiveScreen("main")
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
+    }, 2000)
+  }
+
+  const handleKYCSubmit = () => {
+    if (!kycData.idType || !kycData.idNumber || !kycData.dateOfBirth) {
+      alert("Please fill in all fields!")
+      return
+    }
+    setSuccessMessage("KYC verification submitted! We'll review your documents within 24-48 hours.")
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      setActiveScreen("main")
+    }, 3000)
+  }
+
+  const handleSupportSubmit = () => {
+    if (!supportMessage.trim()) {
+      alert("Please enter your message!")
+      return
+    }
+    setSuccessMessage("Message sent! Our support team will respond within 24 hours.")
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      setActiveScreen("main")
+      setSupportMessage("")
+    }, 2000)
+  }
+
+  const handleIssueSubmit = () => {
+    if (!issueReport.category || !issueReport.description.trim()) {
+      alert("Please fill in all fields!")
+      return
+    }
+    setSuccessMessage("Issue reported successfully! We'll investigate and get back to you soon.")
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      setActiveScreen("main")
+      setIssueReport({ category: "", description: "" })
+    }, 2000)
+  }
+
   if (activeScreen === "service-request") {
     return <ServiceRequestScreen onBack={() => setActiveScreen("main")} userData={userData} />
+  }
+
+  if (activeScreen === "personal-info") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Personal Information</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-4">
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Full Name</Label>
+              <Input value={userData?.fullName || ""} readOnly className="bg-muted" />
+            </div>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Email Address</Label>
+              <Input value={userData?.email || ""} readOnly className="bg-muted" />
+            </div>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Phone Number</Label>
+              <Input value={userData?.phone || ""} readOnly className="bg-muted" />
+            </div>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Location</Label>
+              <Input value={userData?.location || ""} readOnly className="bg-muted" />
+            </div>
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Contact support to update your personal information
+            </p>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "notifications") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Notification Settings</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-6">
+            {Object.entries(notificationSettings).map(([key, value]) => (
+              <div key={key} className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {key === "transactions" && "Get notified about your transactions"}
+                    {key === "recycling" && "Updates on your recycling activities"}
+                    {key === "promotions" && "Special offers and promotions"}
+                    {key === "updates" && "App updates and new features"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setNotificationSettings({ ...notificationSettings, [key]: !value })}
+                  className={`w-12 h-6 rounded-full transition-colors ${value ? "bg-primary" : "bg-muted"}`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full bg-white transition-transform ${value ? "translate-x-6" : "translate-x-1"}`}
+                  />
+                </button>
+              </div>
+            ))}
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "security") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Privacy & Security</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-4">
+            <h3 className="font-semibold text-lg">Change Password</h3>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-semibold mb-2 block">Current Password</Label>
+                <div className="relative">
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-semibold mb-2 block">New Password</Label>
+                <div className="relative">
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-semibold mb-2 block">Confirm New Password</Label>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    placeholder="Confirm new password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+              <Button onClick={handlePasswordChange} className="w-full h-12 font-semibold rounded-md">
+                Update Password
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "kyc") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">KYC Verification</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Complete your KYC verification to unlock higher withdrawal limits and exclusive rewards.
+            </p>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">ID Type</Label>
+              <select
+                value={kycData.idType}
+                onChange={(e) => setKycData({ ...kycData, idType: e.target.value })}
+                className="w-full h-10 px-3 rounded-md border border-input bg-background"
+              >
+                <option value="">Select ID Type</option>
+                <option value="national-id">National ID</option>
+                <option value="passport">Passport</option>
+                <option value="drivers-license">Driver's License</option>
+              </select>
+            </div>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">ID Number</Label>
+              <Input
+                value={kycData.idNumber}
+                onChange={(e) => setKycData({ ...kycData, idNumber: e.target.value })}
+                placeholder="Enter your ID number"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Date of Birth</Label>
+              <Input
+                type="date"
+                value={kycData.dateOfBirth}
+                onChange={(e) => setKycData({ ...kycData, dateOfBirth: e.target.value })}
+              />
+            </div>
+            <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
+              <svg
+                className="w-12 h-12 mx-auto mb-2 text-muted-foreground"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              <p className="text-sm font-semibold mb-1">Upload ID Document</p>
+              <p className="text-xs text-muted-foreground">PNG, JPG or PDF (max 5MB)</p>
+            </div>
+            <Button onClick={handleKYCSubmit} className="w-full h-12 font-semibold rounded-md">
+              Submit for Verification
+            </Button>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "help") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Help Center</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-4">
+            <h3 className="font-semibold text-lg">Frequently Asked Questions</h3>
+
+            <div className="space-y-3">
+              <details className="group">
+                <summary className="font-semibold cursor-pointer list-none flex items-center justify-between p-3 bg-muted rounded-lg">
+                  How do I earn tokens?
+                  <svg
+                    className="w-5 h-5 group-open:rotate-180 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 p-3">
+                  You earn tokens by recycling waste through our collection service or at reverse vending machines. Each
+                  recyclable item has a token value based on its type and weight.
+                </p>
+              </details>
+
+              <details className="group">
+                <summary className="font-semibold cursor-pointer list-none flex items-center justify-between p-3 bg-muted rounded-lg">
+                  How do I request a collection service?
+                  <svg
+                    className="w-5 h-5 group-open:rotate-180 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 p-3">
+                  Go to Settings → Service Request and fill out the form. Choose your bin size and payment plan, then
+                  submit. You'll receive your bin within 7 days.
+                </p>
+              </details>
+
+              <details className="group">
+                <summary className="font-semibold cursor-pointer list-none flex items-center justify-between p-3 bg-muted rounded-lg">
+                  What can I do with my tokens?
+                  <svg
+                    className="w-5 h-5 group-open:rotate-180 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 p-3">
+                  You can transfer tokens to mobile money or bank accounts, donate to charities, pay bills, buy airtime
+                  and data, or use them for other services within the app.
+                </p>
+              </details>
+
+              <details className="group">
+                <summary className="font-semibold cursor-pointer list-none flex items-center justify-between p-3 bg-muted rounded-lg">
+                  How long does verification take?
+                  <svg
+                    className="w-5 h-5 group-open:rotate-180 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <p className="text-sm text-muted-foreground mt-2 p-3">
+                  KYC verification typically takes 24-48 hours. You'll receive a notification once your verification is
+                  complete.
+                </p>
+              </details>
+            </div>
+          </Card>
+
+          <Card className="p-6 rounded-2xl space-y-3">
+            <h3 className="font-semibold text-lg">Still need help?</h3>
+            <Button onClick={() => setActiveScreen("contact-support")} className="w-full h-12 font-semibold rounded-md">
+              Contact Support
+            </Button>
+            <Button
+              onClick={() => setActiveScreen("report-issue")}
+              variant="outline"
+              className="w-full h-12 font-semibold rounded-md"
+            >
+              Report an Issue
+            </Button>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "about") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("main")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">About EcoKash</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <Card className="p-6 rounded-2xl space-y-4">
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-4xl">
+                ♻️
+              </div>
+              <h2 className="text-2xl font-bold mb-2">EcoKash</h2>
+              <p className="text-sm text-muted-foreground">Version 1.0.0</p>
+            </div>
+
+            <div className="space-y-3 pt-4">
+              <h3 className="font-semibold">Our Mission</h3>
+              <p className="text-sm text-muted-foreground">
+                EcoKash is revolutionizing waste management in Sierra Leone by incentivizing recycling through
+                blockchain technology. We empower communities to earn while protecting the environment.
+              </p>
+
+              <h3 className="font-semibold pt-2">What We Do</h3>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li>• Convert recyclables into digital tokens</li>
+                <li>• Provide convenient collection services</li>
+                <li>• Partner with local recycling facilities</li>
+                <li>• Educate communities on sustainable practices</li>
+              </ul>
+            </div>
+          </Card>
+
+          <Card className="p-4 rounded-2xl space-y-2">
+            <button
+              onClick={() => setActiveScreen("terms")}
+              className="w-full text-left p-3 hover:bg-muted rounded-lg transition-colors"
+            >
+              <p className="font-semibold">Terms & Conditions</p>
+            </button>
+            <button
+              onClick={() => setActiveScreen("privacy")}
+              className="w-full text-left p-3 hover:bg-muted rounded-lg transition-colors"
+            >
+              <p className="font-semibold">Privacy Policy</p>
+            </button>
+          </Card>
+
+          <Card className="p-6 rounded-2xl text-center">
+            <p className="text-sm text-muted-foreground">Built on Solana Blockchain</p>
+            <p className="text-xs text-muted-foreground mt-1">© 2025 EcoKash. All rights reserved.</p>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "terms") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("about")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Terms & Conditions</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          <Card className="p-6 rounded-2xl space-y-4 text-sm">
+            <p className="text-muted-foreground">Last updated: January 2024</p>
+
+            <div className="space-y-3">
+              <h3 className="font-semibold text-base">1. Acceptance of Terms</h3>
+              <p className="text-muted-foreground">
+                By accessing and using EcoKash, you accept and agree to be bound by the terms and provision of this
+                agreement.
+              </p>
+
+              <h3 className="font-semibold text-base">2. Use of Service</h3>
+              <p className="text-muted-foreground">
+                You agree to use EcoKash only for lawful purposes and in accordance with these Terms. You must not use
+                our service in any way that violates any applicable laws or regulations.
+              </p>
+
+              <h3 className="font-semibold text-base">3. Token System</h3>
+              <p className="text-muted-foreground">
+                Tokens earned through recycling activities can be redeemed for cash or used for various services. Token
+                values are subject to change based on market conditions and recyclable material prices.
+              </p>
+
+              <h3 className="font-semibold text-base">4. Account Security</h3>
+              <p className="text-muted-foreground">
+                You are responsible for maintaining the confidentiality of your account credentials and for all
+                activities that occur under your account.
+              </p>
+
+              <h3 className="font-semibold text-base">5. Service Modifications</h3>
+              <p className="text-muted-foreground">
+                We reserve the right to modify or discontinue any part of our service at any time without notice.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (activeScreen === "privacy") {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 flex items-center gap-4 border-b border-border">
+          <button
+            onClick={() => setActiveScreen("about")}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold">Privacy Policy</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          <Card className="p-6 rounded-2xl space-y-4 text-sm">
+            <p className="text-muted-foreground">Last updated: January 2024</p>
+
+            <div className="space-y-3">
+              <h3 className="font-semibold text-base">Information We Collect</h3>
+              <p className="text-muted-foreground">
+                We collect information you provide directly to us, including your name, email address, phone number, and
+                location when you create an account or use our services.
+              </p>
+
+              <h3 className="font-semibold text-base">How We Use Your Information</h3>
+              <p className="text-muted-foreground">
+                We use the information we collect to provide, maintain, and improve our services, process transactions,
+                send notifications, and communicate with you about our services.
+              </p>
+
+              <h3 className="font-semibold text-base">Data Security</h3>
+              <p className="text-muted-foreground">
+                We implement appropriate security measures to protect your personal information. However, no method of
+                transmission over the internet is 100% secure.
+              </p>
+
+              <h3 className="font-semibold text-base">Information Sharing</h3>
+              <p className="text-muted-foreground">
+                We do not sell or rent your personal information to third parties. We may share your information with
+                service providers who assist us in operating our platform.
+              </p>
+
+              <h3 className="font-semibold text-base">Your Rights</h3>
+              <p className="text-muted-foreground">
+                You have the right to access, update, or delete your personal information at any time. Contact our
+                support team for assistance.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (showSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <Card className="p-6 rounded-2xl max-w-sm w-full text-center space-y-4 animate-in fade-in zoom-in">
+          <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+            <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <p className="font-semibold text-lg">{successMessage}</p>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div className="h-full flex flex-col">
       <div className="p-6 flex items-center gap-4 border-b border-border">
-        <button onClick={onBack} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+        <button
+          onClick={onBack}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+        >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -48,16 +696,18 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
       <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
         {/* Profile Header - Left aligned with profile picture */}
         <Card className="w-[391px] h-[159px] mx-auto p-5 rounded-3xl flex items-center gap-4">
-          <div className="w-24 h-24 rounded-full flex-shrink-0 overflow-hidden border-2 border-primary/20">
-            <img src="/diverse-group-profile.png" alt="Profile" className="w-full h-full object-cover" />
+          <div className="w-24 h-24 rounded-full flex-shrink-0 overflow-hidden border-2 border-primary/20 bg-muted">
+            <img src="/diverse-group-profile.png" alt="Profile" className="w-full h-full object-cover object-center" />
           </div>
 
           {/* User Info - Left aligned */}
-          <div className="flex-1 flex flex-col justify-center items-start">
-            <h2 className="text-lg font-bold mb-2 text-left">{userData?.fullName || "Guest User"}</h2>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full font-medium">Eco Champion</span>
-              <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground rounded-full font-medium">
+          <div className="flex-1 flex flex-col justify-center">
+            <h2 className="text-lg font-bold mb-2 text-left leading-tight">{userData?.fullName || "Guest User"}</h2>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs whitespace-nowrap">
+                Eco Champion
+              </span>
+              <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground rounded-full font-medium text-xs whitespace-nowrap">
                 Level 5
               </span>
             </div>
@@ -69,7 +719,7 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
           <h3 className="text-lg font-semibold">Account Settings</h3>
 
           <Card
-            onClick={() => setActiveScreen("service-request")}
+            onClick={onNavigateToServiceRequest}
             className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
           >
             <div className="flex items-center gap-4">
@@ -243,7 +893,7 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
 
         <Card
           onClick={() => setActiveScreen("kyc")}
-          className="p-6 rounded-3xl bg-secondary/10 border-secondary cursor-pointer hover:border-secondary/70 transition-colors"
+          className="p-6 rounded-3xl bg-secondary/10 border-secondary cursor-pointer hover:border-secondary/70 transition-colors text-center"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center flex-shrink-0">
@@ -256,12 +906,12 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
                 />
               </svg>
             </div>
-            <div className="flex-1">
-              <p className="font-semibold mb-1">Complete KYC Verification</p>
-              <p className="text-sm text-muted-foreground mb-3">
+            <div className="flex-1 text-center">
+              <p className="font-semibold mb-1 text-left">Complete KYC Verification</p>
+              <p className="text-sm text-muted-foreground mb-3 text-left">
                 Verify your identity to unlock higher withdrawal limits and exclusive rewards
               </p>
-              <Button className="h-10 rounded-xl font-semibold">Start Verification</Button>
+              <Button className="h-10 font-semibold tracking-tight rounded-sm text-left">Start Verification</Button>
             </div>
           </div>
         </Card>

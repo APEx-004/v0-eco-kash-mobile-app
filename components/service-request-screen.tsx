@@ -59,8 +59,8 @@ export function ServiceRequestScreen({ onBack, userData }: ServiceRequestScreenP
   return (
     <div className="h-full flex flex-col bg-background">
       {/* Header */}
-      <div className="p-6 flex items-center gap-4 border-b border-border">
-        <button onClick={onBack} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+      <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
+        <button onClick={onBack} className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -91,7 +91,7 @@ export function ServiceRequestScreen({ onBack, userData }: ServiceRequestScreenP
       )}
 
       {/* Form Content */}
-      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
         {/* Step 1: Personal Information */}
         {step === 1 && (
           <div className="space-y-6">
@@ -128,7 +128,7 @@ export function ServiceRequestScreen({ onBack, userData }: ServiceRequestScreenP
             <Button
               onClick={() => setStep(2)}
               disabled={!formData.name || !formData.address}
-              className="w-full h-12 rounded-xl font-semibold"
+              className="w-full h-12 font-semibold rounded-md bg-popover-foreground"
             >
               Continue
             </Button>

@@ -9,7 +9,7 @@ import Image from "next/image"
 interface TransferScreenProps {
   onBack: () => void
   walletBalance: number
-  onTransfer: (amount: number) => void
+  onTransfer: (amount: number, recipient: string, method: string) => void
 }
 
 type TransferType = "mobile" | "bank" | null
@@ -64,11 +64,10 @@ export function TransferScreen({ onBack, walletBalance, onTransfer }: TransferSc
       return
     }
 
-    // Process transfer
-    onTransfer(transferAmount)
-
     const recipient =
       transferType === "mobile" ? (mobileRecipientType === "agent" ? `Agent ${agentCode}` : phoneNumber) : accountName
+    onTransfer(transferAmount, recipient, selectedProvider || "")
+
     setSuccessMessage(`Successfully transferred $${transferAmount.toFixed(2)} to ${recipient} via ${selectedProvider}!`)
     setShowSuccess(true)
 

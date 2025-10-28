@@ -24,6 +24,16 @@ type UserData = {
   location: string
 } | null
 
+export type Notification = {
+  id: string
+  type: "transfer" | "payment" | "donation" | "deposit" | "collection"
+  title: string
+  description: string
+  amount: string
+  time: string
+  icon: string
+}
+
 export default function EcoKashApp() {
   const [currentScreen, setCurrentScreen] = useState<
     | "onboarding"
@@ -46,6 +56,26 @@ export default function EcoKashApp() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [walletBalance, setWalletBalance] = useState(24.5)
   const [userId, setUserId] = useState<string | null>(null)
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: "1",
+      type: "collection",
+      title: "Plastic Bottles",
+      description: "5 items collected",
+      amount: "+$2.50",
+      time: "2 hours ago",
+      icon: "♻️",
+    },
+    {
+      id: "2",
+      type: "collection",
+      title: "Aluminum Cans",
+      description: "12 items collected",
+      amount: "+$1.80",
+      time: "1 day ago",
+      icon: "🥫",
+    },
+  ])
 
   useEffect(() => {
     const supabase = createClient()
@@ -131,14 +161,44 @@ export default function EcoKashApp() {
 
   const handleDonation = (amount: number, charityName: string) => {
     setWalletBalance((prev) => prev - amount)
+    addNotification({
+      type: "donation",
+      title: `Donated to ${charityName}`,
+      description: `Charitable donation`,
+      amount: `-$${amount.toFixed(2)}`,
+      icon: "❤️",
+    })
   }
 
-  const handleTransfer = (amount: number) => {
+  const handleTransfer = (amount: number, recipient: string, method: string) => {
     setWalletBalance((prev) => prev - amount)
+    addNotification({
+      type: "transfer",
+      title: `Transfer to ${recipient}`,
+      description: `Via ${method}`,
+      amount: `-$${amount.toFixed(2)}`,
+      icon: "💸",
+    })
   }
 
-  const handlePayment = (amount: number) => {
+  const handlePayment = (amount: number, service: string, provider: string) => {
     setWalletBalance((prev) => prev - amount)
+    addNotification({
+      type: "payment",
+      title: `${service} Payment`,
+      description: `Paid to ${provider}`,
+      amount: `-$${amount.toFixed(2)}`,
+      icon: "💳",
+    })
+  }
+
+  const addNotification = (notification: Omit<Notification, "id" | "time">) => {
+    const newNotification: Notification = {
+      ...notification,
+      id: Date.now().toString(),
+      time: "Just now",
+    }
+    setNotifications((prev) => [newNotification, ...prev])
   }
 
   return (
@@ -190,15 +250,31 @@ export default function EcoKashApp() {
             <LoginScreen onLogin={handleLogin} onSwitchToSignup={() => setCurrentScreen("signup")} />
           )}
           {currentScreen === "home" && (
-            <HomeScreen onNavigate={handleNavigate} userData={userData} walletBalance={walletBalance} />
+            <HomeScreen
+              onNavigate={handleNavigate}
+              userData={userData}
+              walletBalance={walletBalance}
+              notifications={notifications}
+            />
           )}
           {currentScreen === "deposit" && <DepositScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "collection" && <CollectionScreen onBack={() => setCurrentScreen("home")} />}
-          {currentScreen === "wallet" && <WalletScreen onBack={() => setCurrentScreen("home")} />}
+          {currentScreen === "wallet" && (
+            <WalletScreen
+              onBack={() => setCurrentScreen("home")}
+              walletBalance={walletBalance}
+              notifications={notifications}
+            />
+          )}
           {currentScreen === "impact" && <ImpactScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "education" && <EducationScreen onBack={() => setCurrentScreen("home")} />}
           {currentScreen === "profile" && (
-            <ProfileScreen onBack={() => setCurrentScreen("home")} userData={userData} onLogout={handleLogout} />
+            <ProfileScreen
+              onBack={() => setCurrentScreen("home")}
+              userData={userData}
+              onLogout={handleLogout}
+              onNavigateToServiceRequest={() => setCurrentScreen("service-request")}
+            />
           )}
           {currentScreen === "charity" && (
             <CharityScreen
@@ -221,7 +297,9 @@ export default function EcoKashApp() {
               onPayment={handlePayment}
             />
           )}
-          {currentScreen === "service-request" && <ServiceRequestScreen onBack={() => setCurrentScreen("home")} />}
+          {currentScreen === "service-request" && (
+            <ServiceRequestScreen onBack={() => setCurrentScreen("profile")} userData={userData} />
+          )}
         </div>
 
         {/* Bottom Navigation - Only show after authentication */}
@@ -285,15 +363,6 @@ export default function EcoKashApp() {
                   />
                 </svg>
                 <span className="text-xs font-medium font-sans">Profile</span>
-              </button>
-              <button
-                onClick={() => setCurrentScreen("service-request")}
-                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "service-request" ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm0 1.5c0 .414-.336.75-.75.75s-.75-.336-.75-.75.336-.75.75-.75z" />
-                </svg>
-                <span className="text-xs font-medium font-sans">Services</span>
               </button>
             </div>
           )}

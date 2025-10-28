@@ -9,7 +9,7 @@ import { useState } from "react"
 interface PaymentsScreenProps {
   onBack: () => void
   walletBalance: number
-  onPayment: (amount: number) => void
+  onPayment: (amount: number, service: string, provider: string) => void
 }
 
 export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScreenProps) {
@@ -39,7 +39,9 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
       return
     }
 
-    onPayment(paymentAmount)
+    const service = selectedCategory === "topup" ? "Top-up" : "Electricity Bill"
+    const provider = selectedCategory === "topup" ? selectedProvider || "" : "EDSA"
+    onPayment(paymentAmount, service, provider)
 
     if (selectedCategory === "topup") {
       setSuccessMessage(`Successfully topped up ${selectedProvider} with $${paymentAmount.toFixed(2)}`)
@@ -80,10 +82,10 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
 
     return (
       <div className="h-full flex flex-col bg-background">
-        <div className="p-6 flex items-center gap-4 border-b border-border">
+        <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
           <button
             onClick={() => setSelectedProvider(null)}
-            className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -92,8 +94,8 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
           <h1 className="text-2xl font-bold">{isTopup ? provider?.name : "EDSA Electricity"}</h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
-          <Card className="p-6 rounded-3xl bg-muted">
+        <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
+          <Card className="p-6 rounded-3xl bg-[rgba(217,237,212,1)]">
             <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
             <p className="text-3xl font-bold">${walletBalance.toFixed(2)}</p>
           </Card>
@@ -208,8 +210,11 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
   // Main payments screen
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="p-6 flex items-center gap-4 border-b border-border">
-        <button onClick={onBack} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+      <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
+        <button
+          onClick={onBack}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+        >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -217,7 +222,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
         <h1 className="text-2xl font-bold">Payments</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
         <Card className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5">
           <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
           <p className="text-4xl font-bold">${walletBalance.toFixed(2)}</p>

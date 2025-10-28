@@ -109,6 +109,50 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
         <p>Earn bonus rewards by referring friends and family to EcoKash. The more people recycle, the cleaner our city becomes!</p>
       `,
     },
+    {
+      id: 5,
+      title: "What is a Reverse Vending Machine (RVM)?",
+      description: "Learn how to use RVMs to deposit your recyclables and earn instant rewards.",
+      thumbnail: "/reverse-vending-machine-recycling-technology.jpg",
+      category: "Technology",
+      duration: "4 min read",
+      content: `
+        <h2>Understanding Reverse Vending Machines</h2>
+        <p>A Reverse Vending Machine (RVM) is an automated recycling station that accepts your recyclable items and rewards you instantly with EcoKash tokens.</p>
+        
+        <h3>What is an RVM?</h3>
+        <p>Unlike traditional vending machines that dispense products, RVMs accept recyclable materials like plastic bottles, aluminum cans, and glass containers. They scan, verify, and sort your items automatically.</p>
+
+        <h3>How to Use an RVM</h3>
+        <p><strong>Step 1:</strong> Locate an RVM near you using the EcoKash app's RVM Finder feature.</p>
+        <p><strong>Step 2:</strong> Scan the QR code on the RVM screen with your EcoKash app to link your account.</p>
+        <p><strong>Step 3:</strong> Insert your clean, empty recyclables one at a time into the machine's opening.</p>
+        <p><strong>Step 4:</strong> The RVM will scan each item, verify it's recyclable, and calculate your reward.</p>
+        <p><strong>Step 5:</strong> Once finished, tap "Complete Transaction" on the screen.</p>
+        <p><strong>Step 6:</strong> Your EcoKash tokens are instantly credited to your wallet!</p>
+
+        <h3>What Can You Deposit?</h3>
+        <ul>
+          <li>PET plastic bottles (water, soda, juice bottles)</li>
+          <li>Aluminum cans (soda, beer, energy drinks)</li>
+          <li>Glass bottles (clean and intact)</li>
+          <li>HDPE plastic containers (milk jugs, detergent bottles)</li>
+        </ul>
+
+        <h3>Tips for Best Results</h3>
+        <p>• Rinse items before depositing - clean items earn higher rewards</p>
+        <p>• Remove caps and labels when possible</p>
+        <p>• Don't crush cans or bottles - the RVM needs to scan barcodes</p>
+        <p>• Deposit items during off-peak hours to avoid queues</p>
+
+        <h3>Benefits of Using RVMs</h3>
+        <p>✓ Instant rewards - no waiting for collection</p>
+        <p>✓ 24/7 availability at most locations</p>
+        <p>✓ Accurate counting and fair pricing</p>
+        <p>✓ Transparent blockchain-verified transactions</p>
+        <p>✓ Convenient locations throughout Freetown</p>
+      `,
+    },
   ]
 
   if (selectedLesson !== null) {
@@ -152,7 +196,10 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
-        <button onClick={onBack} className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]">
+        <button
+          onClick={onBack}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+        >
           <svg className="w-5 h-5 bg-[rgba(217,237,212,1)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>

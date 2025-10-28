@@ -1,6 +1,7 @@
 "use client"
 import { Card } from "@/components/ui/card"
 import { useState } from "react"
+import type { Notification } from "@/app/page"
 
 interface HomeScreenProps {
   onNavigate: (
@@ -22,9 +23,10 @@ interface HomeScreenProps {
     location: string
   } | null
   walletBalance: number
+  notifications: Notification[]
 }
 
-export function HomeScreen({ onNavigate, userData, walletBalance }: HomeScreenProps) {
+export function HomeScreen({ onNavigate, userData, walletBalance, notifications }: HomeScreenProps) {
   const [showNotifications, setShowNotifications] = useState(false)
 
   const firstName = userData?.fullName.split(" ")[0] || "User"
@@ -186,26 +188,32 @@ export function HomeScreen({ onNavigate, userData, walletBalance }: HomeScreenPr
               </div>
 
               <div className="space-y-3">
-                {[
-                  { type: "Plastic Bottles", amount: "+$2.50", count: "5 items", time: "2 hours ago", icon: "♻️" },
-                  { type: "Aluminum Cans", amount: "+$1.80", count: "12 items", time: "1 day ago", icon: "🥫" },
-                  { type: "PET Bottles", amount: "+$3.20", count: "8 items", time: "2 days ago", icon: "🍾" },
-                ].map((activity, index) => (
-                  <Card key={index} className="p-4 rounded-2xl">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">
-                        {activity.icon}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-semibold font-mono">{activity.type}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {activity.count} • {activity.time}
+                {notifications.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">No notifications yet</p>
+                  </div>
+                ) : (
+                  notifications.map((notification) => (
+                    <Card key={notification.id} className="p-4 rounded-2xl">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">
+                          {notification.icon}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold font-mono">{notification.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {notification.description} • {notification.time}
+                          </p>
+                        </div>
+                        <p
+                          className={`font-bold ${notification.amount.startsWith("+") ? "text-success" : "text-destructive"}`}
+                        >
+                          {notification.amount}
                         </p>
                       </div>
-                      <p className="font-bold text-success">{activity.amount}</p>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  ))
+                )}
               </div>
             </div>
           </div>
