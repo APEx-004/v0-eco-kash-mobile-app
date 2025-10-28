@@ -474,7 +474,10 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
 
           <Card className="p-6 rounded-2xl space-y-3">
             <h3 className="font-semibold text-lg">Still need help?</h3>
-            <Button onClick={() => setActiveScreen("contact-support")} className="w-full h-12 font-semibold rounded-md bg-foreground">
+            <Button
+              onClick={() => setActiveScreen("contact-support")}
+              className="w-full h-12 font-semibold rounded-md bg-foreground"
+            >
               Contact Support
             </Button>
             <Button
@@ -734,8 +737,8 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="font-semibold">Service Request</p>
-                <p className="text-sm text-muted-foreground">Request collection service</p>
+                <p className="font-semibold">Bin Payment & Service</p>
+                <p className="text-sm text-muted-foreground">Get your recycling bin (NLE 150)</p>
               </div>
               <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

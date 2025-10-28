@@ -77,6 +77,8 @@ export default function EcoKashApp() {
     },
   ])
 
+  const [hasBin, setHasBin] = useState(false)
+
   useEffect(() => {
     const supabase = createClient()
 
@@ -201,6 +203,10 @@ export default function EcoKashApp() {
     setNotifications((prev) => [newNotification, ...prev])
   }
 
+  const handleBinPurchase = () => {
+    setHasBin(true)
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
       <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10 bg-[rgba(217,237,212,1)]">
@@ -298,7 +304,12 @@ export default function EcoKashApp() {
             />
           )}
           {currentScreen === "service-request" && (
-            <ServiceRequestScreen onBack={() => setCurrentScreen("profile")} userData={userData} />
+            <ServiceRequestScreen
+              onBack={() => setCurrentScreen("profile")}
+              userData={userData}
+              hasBin={hasBin}
+              onBinPurchase={handleBinPurchase}
+            />
           )}
         </div>
 
