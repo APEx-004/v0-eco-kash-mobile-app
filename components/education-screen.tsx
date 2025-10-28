@@ -198,7 +198,7 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
       <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
         <button
           onClick={onBack}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          className="h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)] w-5 border-background"
         >
           <svg className="w-5 h-5 bg-[rgba(217,237,212,1)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

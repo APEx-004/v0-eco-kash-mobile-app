@@ -32,6 +32,7 @@ export type Notification = {
   amount: string
   time: string
   icon: string
+  solanaSignature?: string
 }
 
 export default function EcoKashApp() {
@@ -163,34 +164,40 @@ export default function EcoKashApp() {
 
   const handleDonation = (amount: number, charityName: string) => {
     setWalletBalance((prev) => prev - amount)
+    const signature = generateSolanaSignature()
     addNotification({
       type: "donation",
       title: `Donated to ${charityName}`,
       description: `Charitable donation`,
       amount: `-$${amount.toFixed(2)}`,
       icon: "❤️",
+      solanaSignature: signature,
     })
   }
 
   const handleTransfer = (amount: number, recipient: string, method: string) => {
     setWalletBalance((prev) => prev - amount)
+    const signature = generateSolanaSignature()
     addNotification({
       type: "transfer",
       title: `Transfer to ${recipient}`,
       description: `Via ${method}`,
       amount: `-$${amount.toFixed(2)}`,
       icon: "💸",
+      solanaSignature: signature,
     })
   }
 
   const handlePayment = (amount: number, service: string, provider: string) => {
     setWalletBalance((prev) => prev - amount)
+    const signature = generateSolanaSignature()
     addNotification({
       type: "payment",
       title: `${service} Payment`,
       description: `Paid to ${provider}`,
       amount: `-$${amount.toFixed(2)}`,
       icon: "💳",
+      solanaSignature: signature,
     })
   }
 
@@ -205,6 +212,16 @@ export default function EcoKashApp() {
 
   const handleBinPurchase = () => {
     setHasBin(true)
+  }
+
+  const generateSolanaSignature = (): string => {
+    // Generate a realistic-looking Solana transaction signature (base58 encoded)
+    const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    let signature = ""
+    for (let i = 0; i < 88; i++) {
+      signature += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return signature
   }
 
   return (
@@ -334,15 +351,6 @@ export default function EcoKashApp() {
                   <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
                 </svg>
                 <span className="text-xs font-medium font-sans">Home</span>
-              </button>
-              <button
-                onClick={() => setCurrentScreen("wallet")}
-                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "wallet" ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M2.273 5.625A4.483 4.483 0 015.25 4.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0018.75 3H5.25a3 3 0 00-2.977 2.625zM2.273 8.625A4.483 4.483 0 015.25 7.5h13.5c1.141 0 2.183.425 2.977 1.125A3 3 0 0018.75 6H5.25a3 3 0 00-2.977 2.625zM5.25 9a3 3 0 00-3 3v6a3 3 0 003 3h13.5a3 3 0 003-3v-6a3 3 0 00-3-3H15a.75.75 0 00-.75.75 2.25 2.25 0 01-4.5 0A.75.75 0 009 9H5.25z" />
-                </svg>
-                <span className="text-xs font-medium font-sans">Wallet</span>
               </button>
               <button
                 onClick={() => setCurrentScreen("impact")}

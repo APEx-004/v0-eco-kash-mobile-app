@@ -204,6 +204,24 @@ export function HomeScreen({ onNavigate, userData, walletBalance, notifications 
                           <p className="text-sm text-muted-foreground">
                             {notification.description} • {notification.time}
                           </p>
+                          {notification.solanaSignature && (
+                            <a
+                              href={`https://explorer.solana.com/tx/${notification.solanaSignature}?cluster=devnet`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary hover:underline flex items-center gap-1 mt-1"
+                            >
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              View on Solana Explorer
+                            </a>
+                          )}
                         </div>
                         <p
                           className={`font-bold ${notification.amount.startsWith("+") ? "text-success" : "text-destructive"}`}
