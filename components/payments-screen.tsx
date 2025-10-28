@@ -143,10 +143,10 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
 
     return (
       <div className="h-full flex flex-col bg-background">
-        <div className="p-6 flex items-center gap-4 border-b border-border">
+        <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
           <button
             onClick={() => setSelectedCategory(null)}
-            className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -155,7 +155,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
           <h1 className="text-2xl font-bold">{isTopup ? "Top-up Options" : "Bill Payments"}</h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-4">
+        <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-4 bg-[rgba(217,237,212,1)]">
           {isTopup ? (
             topupProviders.map((provider) => (
               <Card

@@ -68,7 +68,7 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
 
   return (
     <div
-      className="h-full flex flex-col items-center justify-between p-8 pb-12 text-center bg-gradient-to-b from-primary/5 to-background"
+      className="h-full flex flex-col items-center justify-between p-8 pb-12 text-center bg-gradient-to-b from-primary/5 to-background bg-[rgba(217,237,212,1)]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
