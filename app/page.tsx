@@ -15,6 +15,7 @@ import { ProfileScreen } from "@/components/profile-screen"
 import { CharityScreen } from "@/components/charity-screen"
 import { TransferScreen } from "@/components/transfer-screen"
 import { PaymentsScreen } from "@/components/payments-screen"
+import { ServiceRequestScreen } from "@/components/service-request-screen"
 
 type UserData = {
   fullName: string
@@ -38,6 +39,7 @@ export default function EcoKashApp() {
     | "charity"
     | "transfer"
     | "payments"
+    | "service-request"
   >("onboarding")
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [userData, setUserData] = useState<UserData>(null)
@@ -219,6 +221,7 @@ export default function EcoKashApp() {
               onPayment={handlePayment}
             />
           )}
+          {currentScreen === "service-request" && <ServiceRequestScreen onBack={() => setCurrentScreen("home")} />}
         </div>
 
         {/* Bottom Navigation - Only show after authentication */}
@@ -230,7 +233,8 @@ export default function EcoKashApp() {
           currentScreen !== "collection" &&
           currentScreen !== "charity" &&
           currentScreen !== "transfer" &&
-          currentScreen !== "payments" && (
+          currentScreen !== "payments" &&
+          currentScreen !== "service-request" && (
             <div className="absolute bottom-0 left-0 right-0 h-20 border-t border-border flex items-center justify-around px-4 pb-4 bg-[rgba(217,237,212,1)]">
               <button
                 onClick={() => setCurrentScreen("home")}
@@ -281,6 +285,15 @@ export default function EcoKashApp() {
                   />
                 </svg>
                 <span className="text-xs font-medium font-sans">Profile</span>
+              </button>
+              <button
+                onClick={() => setCurrentScreen("service-request")}
+                className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "service-request" ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm0 1.5c0 .414-.336.75-.75.75s-.75-.336-.75-.75.336-.75.75-.75z" />
+                </svg>
+                <span className="text-xs font-medium font-sans">Services</span>
               </button>
             </div>
           )}

@@ -2,6 +2,8 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
+import { ServiceRequestScreen } from "@/components/service-request-screen" // Import ServiceRequestScreen
 
 interface ProfileScreenProps {
   onBack: () => void
@@ -15,6 +17,10 @@ interface ProfileScreenProps {
 }
 
 export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps) {
+  const [activeScreen, setActiveScreen] = useState<
+    "main" | "service-request" | "personal-info" | "notifications" | "security" | "kyc" | "help" | "about"
+  >("main")
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -22,6 +28,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
       .join("")
       .toUpperCase()
       .slice(0, 2)
+  }
+
+  if (activeScreen === "service-request") {
+    return <ServiceRequestScreen onBack={() => setActiveScreen("main")} userData={userData} />
   }
 
   return (
@@ -58,7 +68,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">Account Settings</h3>
 
-          <Card className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors">
+          <Card
+            onClick={() => setActiveScreen("service-request")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,7 +93,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
             </div>
           </Card>
 
-          <Card className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors">
+          <Card
+            onClick={() => setActiveScreen("personal-info")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,7 +170,7 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    d="M17.657 16.657L13.414 20.9a1 1 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                   />
                   <path
                     strokeLinecap="round"
@@ -174,7 +190,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
             </div>
           </Card>
 
-          <Card className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors">
+          <Card
+            onClick={() => setActiveScreen("notifications")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,7 +215,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
             </div>
           </Card>
 
-          <Card className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors">
+          <Card
+            onClick={() => setActiveScreen("security")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -219,8 +241,10 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
           </Card>
         </div>
 
-        {/* KYC Verification */}
-        <Card className="p-6 rounded-3xl bg-secondary/10 border-secondary">
+        <Card
+          onClick={() => setActiveScreen("kyc")}
+          className="p-6 rounded-3xl bg-secondary/10 border-secondary cursor-pointer hover:border-secondary/70 transition-colors"
+        >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center flex-shrink-0">
               <svg className="w-6 h-6 text-secondary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -242,30 +266,40 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
           </div>
         </Card>
 
-        {/* Support */}
+        {/* Support - Now interactive */}
         <div className="space-y-3">
           <h3 className="text-lg font-semibold">Support</h3>
-          {[
-            { icon: "❓", title: "Help Center", desc: "Find answers to common questions" },
-            { icon: "💬", title: "Contact Support", desc: "Get help from our team" },
-            { icon: "📄", title: "Terms & Conditions", desc: "Read our policies" },
-            { icon: "ℹ️", title: "About EcoKash", desc: "Learn more about our mission" },
-          ].map((item, index) => (
-            <Card key={index} className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-2xl">
-                  {item.icon}
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
-                <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+          <Card
+            onClick={() => setActiveScreen("help")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-2xl">❓</div>
+              <div className="flex-1">
+                <p className="font-semibold">Help Center</p>
+                <p className="text-sm text-muted-foreground">Find answers to common questions</p>
               </div>
-            </Card>
-          ))}
+              <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Card>
+
+          <Card
+            onClick={() => setActiveScreen("about")}
+            className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-2xl">ℹ️</div>
+              <div className="flex-1">
+                <p className="font-semibold">About EcoKash</p>
+                <p className="text-sm text-muted-foreground">Learn more about our mission</p>
+              </div>
+              <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Card>
         </div>
 
         {/* App Info */}

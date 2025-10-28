@@ -117,10 +117,10 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
 
     return (
       <div className="h-full flex flex-col bg-background">
-        <div className="p-6 flex items-center gap-4 border-b border-border">
+        <div className="p-6 flex items-center gap-4 border-b border-[rgba(217,237,212,1)] bg-[rgba(217,237,212,1)]">
           <button
             onClick={() => setSelectedLesson(null)}
-            className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -129,7 +129,7 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
           <h1 className="text-xl font-bold text-balance">{lesson.title}</h1>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 pb-24">
+        <div className="flex-1 overflow-y-auto p-6 pb-24 border-[rgba(217,237,212,1)] bg-[rgba(217,237,212,1)]">
           <img
             src={lesson.thumbnail || "/placeholder.svg"}
             alt={lesson.title}
@@ -151,16 +151,16 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="p-6 flex items-center gap-4 border-b border-border">
-        <button onClick={onBack} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">
+        <button onClick={onBack} className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]">
+          <svg className="w-5 h-5 bg-[rgba(217,237,212,1)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <h1 className="text-2xl font-bold">Learn & Grow</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
         <h3 className="text-lg font-semibold">All Lessons</h3>
 
         <div className="space-y-4">

@@ -103,7 +103,7 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
         {isLastSlide ? (
           <Button
             onClick={onComplete}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-2xl font-semibold"
+            className="w-full text-primary-foreground hover:bg-primary/90 h-12 rounded-2xl font-semibold bg-black"
           >
             Get Started
           </Button>
