@@ -17,6 +17,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
   const [amount, setAmount] = useState("")
   const [meterNumber, setMeterNumber] = useState("")
+  const [mobileNumber, setMobileNumber] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
 
@@ -39,12 +40,19 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
       return
     }
 
+    if (selectedCategory === "topup" && !mobileNumber) {
+      alert("Please enter a mobile number")
+      return
+    }
+
     const service = selectedCategory === "topup" ? "Top-up" : "Electricity Bill"
     const provider = selectedCategory === "topup" ? selectedProvider || "" : "EDSA"
     onPayment(paymentAmount, service, provider)
 
     if (selectedCategory === "topup") {
-      setSuccessMessage(`Successfully topped up ${selectedProvider} with $${paymentAmount.toFixed(2)}`)
+      setSuccessMessage(
+        `Successfully topped up ${mobileNumber} with ${selectedProvider} for $${paymentAmount.toFixed(2)}`,
+      )
     } else {
       setSuccessMessage(`Successfully paid $${paymentAmount.toFixed(2)} for EDSA electricity`)
     }
@@ -52,6 +60,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
     setShowSuccess(true)
     setAmount("")
     setMeterNumber("")
+    setMobileNumber("")
 
     setTimeout(() => {
       setShowSuccess(false)
@@ -101,6 +110,20 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
           </Card>
 
           <div className="space-y-4">
+            {isTopup && (
+              <div className="space-y-2">
+                <Label htmlFor="mobile">Mobile Number</Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  placeholder="Enter mobile number (e.g., 076123456)"
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  className="h-12 rounded-xl"
+                />
+              </div>
+            )}
+
             {!isTopup && (
               <div className="space-y-2">
                 <Label htmlFor="meter">Meter Number</Label>
