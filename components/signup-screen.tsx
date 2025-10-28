@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { createClient } from "@/lib/supabase/client"
 
 interface SignupScreenProps {
   onSignup: (userData: {
@@ -20,26 +20,58 @@ interface SignupScreenProps {
 export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
   const [formData, setFormData] = useState({
     fullName: "",
-    contact: "", // Combined phone/email field
-    address: "", // Renamed from location to address
+    contact: "",
+    address: "",
     password: "",
     confirmPassword: "",
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!")
+      setError("Passwords do not match!")
       return
     }
+
+    setIsLoading(true)
+    const supabase = createClient()
     const isEmail = formData.contact.includes("@")
-    onSignup({
-      fullName: formData.fullName,
-      email: isEmail ? formData.contact : "",
-      phone: isEmail ? "" : formData.contact,
-      password: formData.password,
-      location: formData.address,
-    })
+
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: isEmail ? formData.contact : `${formData.contact}@ecokash.sl`,
+        password: formData.password,
+        options: {
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || window.location.origin,
+          data: {
+            full_name: formData.fullName,
+            email: isEmail ? formData.contact : "",
+            phone: isEmail ? "" : formData.contact,
+            address: formData.address,
+          },
+        },
+      })
+
+      if (signUpError) throw signUpError
+
+      if (data.user) {
+        onSignup({
+          fullName: formData.fullName,
+          email: isEmail ? formData.contact : "",
+          phone: isEmail ? "" : formData.contact,
+          password: formData.password,
+          location: formData.address,
+        })
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred during signup")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -61,6 +93,7 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
@@ -73,6 +106,7 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
               value={formData.contact}
               onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
@@ -85,6 +119,7 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
@@ -97,6 +132,7 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
@@ -109,15 +145,19 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
 
+          {error && <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm">{error}</div>}
+
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full h-12 font-semibold text-base mt-6 rounded-sm bg-[rgba(12,11,11,1)] hover:bg-[rgba(12,11,11,0.9)]"
           >
-            Create Account
+            {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
 
           <div className="text-center pt-4">

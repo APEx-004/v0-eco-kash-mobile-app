@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { createClient } from "@/lib/supabase/client"
 
 interface LoginScreenProps {
   onLogin: (email: string, password: string) => void
@@ -14,10 +14,35 @@ interface LoginScreenProps {
 export function LoginScreen({ onLogin, onSwitchToSignup }: LoginScreenProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onLogin(email, password)
+    setError(null)
+
+    setIsLoading(true)
+    const supabase = createClient()
+
+    try {
+      // Handle phone number login by converting to email format
+      const loginEmail = email.includes("@") ? email : `${email}@ecokash.sl`
+
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password,
+      })
+
+      if (signInError) throw signInError
+
+      if (data.user) {
+        onLogin(email, password)
+      }
+    } catch (err: any) {
+      setError(err.message || "Invalid email/phone or password")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -49,6 +74,7 @@ export function LoginScreen({ onLogin, onSwitchToSignup }: LoginScreenProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
@@ -63,15 +89,19 @@ export function LoginScreen({ onLogin, onSwitchToSignup }: LoginScreenProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading}
               className="h-12 rounded-xl"
             />
           </div>
 
+          {error && <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm">{error}</div>}
+
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full h-12 font-semibold text-base mt-8 rounded-sm bg-[rgba(12,11,11,1)] hover:bg-[rgba(12,11,11,1)] hover:opacity-90"
           >
-            Sign In
+            {isLoading ? "Signing In..." : "Sign In"}
           </Button>
 
           <div className="text-center pt-6">
