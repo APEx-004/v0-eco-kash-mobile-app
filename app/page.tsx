@@ -14,6 +14,7 @@ import { EducationScreen } from "@/components/education-screen"
 import { ProfileScreen } from "@/components/profile-screen"
 import { CharityScreen } from "@/components/charity-screen"
 import { TransferScreen } from "@/components/transfer-screen"
+import { PaymentsScreen } from "@/components/payments-screen"
 
 type UserData = {
   fullName: string
@@ -36,6 +37,7 @@ export default function EcoKashApp() {
     | "profile"
     | "charity"
     | "transfer"
+    | "payments"
   >("onboarding")
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [userData, setUserData] = useState<UserData>(null)
@@ -133,6 +135,10 @@ export default function EcoKashApp() {
     setWalletBalance((prev) => prev - amount)
   }
 
+  const handlePayment = (amount: number) => {
+    setWalletBalance((prev) => prev - amount)
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
       <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10 bg-[rgba(217,237,212,1)]">
@@ -206,6 +212,13 @@ export default function EcoKashApp() {
               onTransfer={handleTransfer}
             />
           )}
+          {currentScreen === "payments" && (
+            <PaymentsScreen
+              onBack={() => setCurrentScreen("home")}
+              walletBalance={walletBalance}
+              onPayment={handlePayment}
+            />
+          )}
         </div>
 
         {/* Bottom Navigation - Only show after authentication */}
@@ -216,7 +229,8 @@ export default function EcoKashApp() {
           currentScreen !== "deposit" &&
           currentScreen !== "collection" &&
           currentScreen !== "charity" &&
-          currentScreen !== "transfer" && (
+          currentScreen !== "transfer" &&
+          currentScreen !== "payments" && (
             <div className="absolute bottom-0 left-0 right-0 h-20 border-t border-border flex items-center justify-around px-4 pb-4 bg-[rgba(217,237,212,1)]">
               <button
                 onClick={() => setCurrentScreen("home")}

@@ -38,9 +38,8 @@ export function ProfileScreen({ onBack, userData, onLogout }: ProfileScreenProps
       <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
         {/* Profile Header - Left aligned with profile picture */}
         <Card className="w-[391px] h-[159px] mx-auto p-5 rounded-3xl flex items-center gap-4">
-          {/* Profile Picture */}
-          <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-primary/20">
-            <img src="/diverse-group-profile.png" alt="Profile" className="w-full h-full object-cover text-left" />
+          <div className="w-24 h-24 rounded-full flex-shrink-0 overflow-hidden border-2 border-primary/20">
+            <img src="/diverse-group-profile.png" alt="Profile" className="w-full h-full object-cover" />
           </div>
 
           {/* User Info - Left aligned */}

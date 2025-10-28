@@ -4,7 +4,16 @@ import { useState } from "react"
 
 interface HomeScreenProps {
   onNavigate: (
-    screen: "deposit" | "collection" | "wallet" | "impact" | "education" | "profile" | "charity" | "transfer",
+    screen:
+      | "deposit"
+      | "collection"
+      | "wallet"
+      | "impact"
+      | "education"
+      | "profile"
+      | "charity"
+      | "transfer"
+      | "payments",
   ) => void
   userData?: {
     fullName: string
@@ -26,7 +35,10 @@ export function HomeScreen({ onNavigate, userData, walletBalance }: HomeScreenPr
       <div className="p-6 text-left">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="font-semibold text-[rgba(7,7,7,1)] font-sans text-3xl">Kushe!</p>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-[rgba(7,7,7,1)] font-sans text-3xl">Kushe!</p>
+              <span className="text-3xl">👋</span>
+            </div>
             <p className="font-medium text-[rgba(7,7,7,1)] font-sans text-xl">{firstName}</p>
           </div>
           <button className="relative" onClick={() => setShowNotifications(!showNotifications)}>
@@ -102,7 +114,10 @@ export function HomeScreen({ onNavigate, userData, walletBalance }: HomeScreenPr
             </button>
 
             {/* Payments */}
-            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+            <button
+              onClick={() => onNavigate("payments")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
               <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
