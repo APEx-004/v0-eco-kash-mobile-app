@@ -295,7 +295,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
                   </button>
                 </div>
               </div>
-              <Button onClick={handlePasswordChange} className="w-full h-12 font-semibold rounded-md">
+              <Button onClick={handlePasswordChange} className="w-full h-12 font-semibold rounded-md bg-black">
                 Update Password
               </Button>
             </div>
@@ -370,7 +370,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
               <p className="text-sm font-semibold mb-1">Upload ID Document</p>
               <p className="text-xs text-muted-foreground">PNG, JPG or PDF (max 5MB)</p>
             </div>
-            <Button onClick={handleKYCSubmit} className="w-full h-12 font-semibold rounded-md">
+            <Button onClick={handleKYCSubmit} className="w-full h-12 font-semibold rounded-md bg-popover-foreground">
               Submit for Verification
             </Button>
           </Card>
@@ -474,7 +474,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
 
           <Card className="p-6 rounded-2xl space-y-3">
             <h3 className="font-semibold text-lg">Still need help?</h3>
-            <Button onClick={() => setActiveScreen("contact-support")} className="w-full h-12 font-semibold rounded-md">
+            <Button onClick={() => setActiveScreen("contact-support")} className="w-full h-12 font-semibold rounded-md bg-foreground">
               Contact Support
             </Button>
             <Button
