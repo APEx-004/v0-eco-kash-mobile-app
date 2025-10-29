@@ -1,5 +1,6 @@
 "use client"
-import { Card, Button } from "@/components/ui"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { useState } from "react"
 import type { Notification, CollectionData } from "@/app/page"
 
@@ -255,7 +256,10 @@ export function HomeScreen({
             </button>
 
             {/* RVM Location */}
-            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+            <button
+              onClick={() => onNavigate("deposit")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
               <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -289,7 +293,12 @@ export function HomeScreen({
                 <h2 className="text-2xl font-bold text-sidebar-foreground">Notifications</h2>
                 <button onClick={() => setShowNotifications(false)}>
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12m-4-4l4-4"
+                    />
                   </svg>
                 </button>
               </div>
