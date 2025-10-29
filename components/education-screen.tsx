@@ -214,7 +214,7 @@ export function EducationScreen({ onBack }: EducationScreenProps) {
           {lessons.map((lesson) => (
             <Card
               key={lesson.id}
-              className="overflow-hidden rounded-2xl cursor-pointer hover:border-primary transition-all"
+              className="overflow-hidden rounded-2xl cursor-pointer hover:border-primary transition-all bg-card"
               onClick={() => setSelectedLesson(lesson.id)}
             >
               <img
