@@ -35,6 +35,13 @@ export type Notification = {
   solanaSignature?: string
 }
 
+export type CollectionData = {
+  amount: number
+  recyclablesCount: number
+  lastCollectionDate: string
+  nextCollectionDate: string
+}
+
 export default function EcoKashApp() {
   const [currentScreen, setCurrentScreen] = useState<
     | "onboarding"
@@ -55,30 +62,17 @@ export default function EcoKashApp() {
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [userData, setUserData] = useState<UserData>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [walletBalance, setWalletBalance] = useState(24.5)
+  const [walletBalance, setWalletBalance] = useState(0)
   const [userId, setUserId] = useState<string | null>(null)
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "collection",
-      title: "Plastic Bottles",
-      description: "5 items collected",
-      amount: "+$2.50",
-      time: "2 hours ago",
-      icon: "♻️",
-    },
-    {
-      id: "2",
-      type: "collection",
-      title: "Aluminum Cans",
-      description: "12 items collected",
-      amount: "+$1.80",
-      time: "1 day ago",
-      icon: "🥫",
-    },
-  ])
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
   const [hasBin, setHasBin] = useState(false)
+  const [collectionData, setCollectionData] = useState<CollectionData>({
+    amount: 0,
+    recyclablesCount: 0,
+    lastCollectionDate: "",
+    nextCollectionDate: "",
+  })
 
   useEffect(() => {
     const supabase = createClient()
@@ -142,6 +136,9 @@ export default function EcoKashApp() {
       location: data.location,
     })
     setIsAuthenticated(true)
+    setWalletBalance(0)
+    setNotifications([])
+    setHasBin(false)
     setCurrentScreen("home")
   }
 
@@ -212,10 +209,56 @@ export default function EcoKashApp() {
 
   const handleBinPurchase = () => {
     setHasBin(true)
+    const today = new Date()
+    const nextCollection = new Date(today)
+    nextCollection.setDate(today.getDate() + 14)
+
+    setCollectionData({
+      amount: 0,
+      recyclablesCount: 0,
+      lastCollectionDate: "",
+      nextCollectionDate: nextCollection.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    })
+  }
+
+  const handleCollection = (amount: number, itemCount: number) => {
+    const today = new Date()
+    const nextCollection = new Date(today)
+    nextCollection.setDate(today.getDate() + 14)
+
+    setCollectionData({
+      amount: collectionData.amount + amount,
+      recyclablesCount: collectionData.recyclablesCount + itemCount,
+      lastCollectionDate: today.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      nextCollectionDate: nextCollection.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    })
+
+    setWalletBalance((prev) => prev + amount)
+
+    const signature = generateSolanaSignature()
+    addNotification({
+      type: "collection",
+      title: "Recyclables Collected",
+      description: `${itemCount} items collected`,
+      amount: `+$${amount.toFixed(2)}`,
+      icon: "♻️",
+      solanaSignature: signature,
+    })
   }
 
   const generateSolanaSignature = (): string => {
-    // Generate a realistic-looking Solana transaction signature (base58 encoded)
     const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     let signature = ""
     for (let i = 0; i < 88; i++) {
@@ -227,27 +270,23 @@ export default function EcoKashApp() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
       <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10 bg-[rgba(217,237,212,1)]">
-        {/* Status Bar */}
         <div className="absolute top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-8 pt-2 text-[rgba(216,237,211,1)] bg-[rgba(216,237,211,1)]">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-semibold text-foreground">9:41</span>
           </div>
           <div className="flex items-center gap-1.5">
-            {/* Signal Strength */}
             <svg className="w-4 h-3.5 text-[rgba(22,22,22,1)]" viewBox="0 0 16 14" fill="currentColor">
               <circle cx="2" cy="12" r="1.5" />
               <circle cx="6" cy="10" r="1.5" />
               <circle cx="10" cy="7" r="1.5" />
               <circle cx="14" cy="4" r="1.5" />
             </svg>
-            {/* WiFi */}
             <svg className="w-4 h-3.5 text-[rgba(12,12,12,1)]" viewBox="0 0 16 12" fill="currentColor">
               <path
                 className="bg-[rgba(7,7,7,1)]"
                 d="M8 12c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3.74-3.74c-.41-.41-1.08-.41-1.49 0-.2.2-.3.46-.3.74 0 .28.1.54.3.74.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49zm2.83-2.83c-1.56-1.56-4.1-1.56-5.66 0-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0zm2.83-2.83c-3.12-3.12-8.19-3.12-11.31 0-1.56 1.56-1.56 4.1 0 5.66.78.78 2.05.78 2.83 0 1.56-1.56 1.56-4.1 0-5.66z"
               />
             </svg>
-            {/* Battery */}
             <div className="flex items-center gap-0.5">
               <div className="w-6 h-3 border-2 border-foreground rounded-sm relative">
                 <div className="absolute inset-0.5 bg-foreground rounded-[1px]" />
@@ -257,7 +296,6 @@ export default function EcoKashApp() {
           </div>
         </div>
 
-        {/* Screen Content */}
         <div className="h-full pt-12 pb-8">
           {currentScreen === "onboarding" && (
             <OnboardingScreen
@@ -278,6 +316,9 @@ export default function EcoKashApp() {
               userData={userData}
               walletBalance={walletBalance}
               notifications={notifications}
+              hasBin={hasBin}
+              collectionData={collectionData}
+              onSimulateCollection={handleCollection}
             />
           )}
           {currentScreen === "deposit" && <DepositScreen onBack={() => setCurrentScreen("home")} />}
@@ -330,7 +371,6 @@ export default function EcoKashApp() {
           )}
         </div>
 
-        {/* Bottom Navigation - Only show after authentication */}
         {isAuthenticated &&
           currentScreen !== "onboarding" &&
           currentScreen !== "signup" &&
@@ -357,7 +397,7 @@ export default function EcoKashApp() {
                 className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "impact" ? "text-primary" : "text-muted-foreground"}`}
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
+                  <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
                 </svg>
                 <span className="text-xs font-medium font-sans">Impact</span>
               </button>

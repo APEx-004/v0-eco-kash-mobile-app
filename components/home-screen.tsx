@@ -1,7 +1,7 @@
 "use client"
-import { Card } from "@/components/ui/card"
+import { Card, Button } from "@/components/ui"
 import { useState } from "react"
-import type { Notification } from "@/app/page"
+import type { Notification, CollectionData } from "@/app/page"
 
 interface HomeScreenProps {
   onNavigate: (
@@ -14,7 +14,8 @@ interface HomeScreenProps {
       | "profile"
       | "charity"
       | "transfer"
-      | "payments",
+      | "payments"
+      | "service-request",
   ) => void
   userData?: {
     fullName: string
@@ -24,15 +25,69 @@ interface HomeScreenProps {
   } | null
   walletBalance: number
   notifications: Notification[]
+  hasBin: boolean
+  collectionData: CollectionData
+  onSimulateCollection: (amount: number, itemCount: number) => void
 }
 
-export function HomeScreen({ onNavigate, userData, walletBalance, notifications }: HomeScreenProps) {
+export function HomeScreen({
+  onNavigate,
+  userData,
+  walletBalance,
+  notifications,
+  hasBin,
+  collectionData,
+  onSimulateCollection,
+}: HomeScreenProps) {
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showBinPopup, setShowBinPopup] = useState(!hasBin)
 
   const firstName = userData?.fullName.split(" ")[0] || "User"
 
   return (
     <div className="h-full overflow-y-auto pb-24 text-[rgba(217,237,212,1)] bg-[rgba(216,237,211,1)] text-left">
+      {showBinPopup && !hasBin && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-sm p-6 rounded-3xl space-y-4 animate-in zoom-in-95">
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <svg className="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Get Your EcoKash Bin!</h3>
+              <p className="text-muted-foreground mb-6">
+                Start your recycling journey today. Get a bin delivered to your doorstep and begin earning from your
+                waste.
+              </p>
+              <div className="space-y-3">
+                <Button
+                  onClick={() => {
+                    setShowBinPopup(false)
+                    onNavigate("service-request")
+                  }}
+                  className="w-full h-12 font-semibold rounded-xl bg-primary"
+                >
+                  Get Bin Now
+                </Button>
+                <Button
+                  onClick={() => setShowBinPopup(false)}
+                  variant="ghost"
+                  className="w-full h-12 font-semibold rounded-xl"
+                >
+                  Maybe Later
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
       {/* Header */}
       <div className="p-6 text-left">
         <div className="flex items-center justify-between mb-6">
@@ -65,7 +120,6 @@ export function HomeScreen({ onNavigate, userData, walletBalance, notifications 
           <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 text-center py-0 border-0" />
 
           {/* Recycling Icon */}
-
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex items-start justify-between">
               <div>
@@ -95,6 +149,59 @@ export function HomeScreen({ onNavigate, userData, walletBalance, notifications 
             </div>
           </div>
         </Card>
+
+        {hasBin && (
+          <Card className="mt-6 p-6 rounded-3xl border-2 border-primary/20">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">Collection Summary</h3>
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-primary/5 p-4 rounded-2xl">
+                <p className="text-sm text-muted-foreground mb-1">Total Earned</p>
+                <p className="text-2xl font-bold text-primary">${collectionData.amount.toFixed(2)}</p>
+              </div>
+              <div className="bg-primary/5 p-4 rounded-2xl">
+                <p className="text-sm text-muted-foreground mb-1">Items Collected</p>
+                <p className="text-2xl font-bold text-primary">{collectionData.recyclablesCount}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              {collectionData.lastCollectionDate && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Last Collection:</span>
+                  <span className="font-semibold">{collectionData.lastCollectionDate}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Next Collection:</span>
+                <span className="font-semibold text-primary">{collectionData.nextCollectionDate}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Collection Interval:</span>
+                <span className="font-semibold">Every 2 weeks</span>
+              </div>
+            </div>
+
+            <Button
+              onClick={() => onSimulateCollection(5.5, 12)}
+              className="w-full mt-4 h-10 font-semibold rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
+            >
+              Simulate Collection (Testing)
+            </Button>
+          </Card>
+        )}
 
         {/* Quick Actions */}
         <div className="mb-6 mt-7 flex justify-center">
