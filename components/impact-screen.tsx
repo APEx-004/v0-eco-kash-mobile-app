@@ -20,7 +20,7 @@ export function ImpactScreen({ onBack }: ImpactScreenProps) {
 
       <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6">
         {/* Hero Impact Card */}
-        <Card className="p-8 rounded-3xl bg-primary text-primary-foreground text-center">
+        <Card className="p-8 rounded-3xl text-primary-foreground text-center bg-secondary-foreground">
           <div className="text-6xl mb-4">🌍</div>
           <h2 className="text-3xl font-bold mb-2">Great Work!</h2>
           <p className="text-primary-foreground/90 text-pretty">

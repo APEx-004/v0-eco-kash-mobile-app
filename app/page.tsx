@@ -73,6 +73,7 @@ export default function EcoKashApp() {
     lastCollectionDate: "",
     nextCollectionDate: "",
   })
+  const [monthlyEarnings, setMonthlyEarnings] = useState(0)
 
   useEffect(() => {
     const supabase = createClient()
@@ -246,6 +247,7 @@ export default function EcoKashApp() {
     })
 
     setWalletBalance((prev) => prev + amount)
+    setMonthlyEarnings((prev) => prev + amount)
 
     const signature = generateSolanaSignature()
     addNotification({
@@ -270,22 +272,19 @@ export default function EcoKashApp() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[rgba(217,237,212,1)]">
       <div className="w-full max-w-md h-[812px] rounded-[3rem] shadow-2xl overflow-hidden relative border-8 border-foreground/10 bg-[rgba(217,237,212,1)]">
-        <div className="absolute top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-8 pt-2 text-[rgba(216,237,211,1)] bg-[rgba(216,237,211,1)]">
+        <div className="absolute top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-8 pt-2 bg-[rgba(216,237,211,1)]">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-semibold text-foreground">9:41</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <svg className="w-4 h-3.5 text-[rgba(22,22,22,1)]" viewBox="0 0 16 14" fill="currentColor">
+            <svg className="w-4 h-3.5 text-foreground" viewBox="0 0 16 14" fill="currentColor">
               <circle cx="2" cy="12" r="1.5" />
               <circle cx="6" cy="10" r="1.5" />
               <circle cx="10" cy="7" r="1.5" />
               <circle cx="14" cy="4" r="1.5" />
             </svg>
-            <svg className="w-4 h-3.5 text-[rgba(12,12,12,1)]" viewBox="0 0 16 12" fill="currentColor">
-              <path
-                className="bg-[rgba(7,7,7,1)]"
-                d="M8 12c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3.74-3.74c-.41-.41-1.08-.41-1.49 0-.2.2-.3.46-.3.74 0 .28.1.54.3.74.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49zm2.83-2.83c-1.56-1.56-4.1-1.56-5.66 0-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0zm2.83-2.83c-3.12-3.12-8.19-3.12-11.31 0-1.56 1.56-1.56 4.1 0 5.66.78.78 2.05.78 2.83 0 1.56-1.56 1.56-4.1 0-5.66z"
-              />
+            <svg className="w-4 h-3.5 text-foreground" viewBox="0 0 16 12" fill="currentColor">
+              <path d="M8 12c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3.74-3.74c-.41-.41-1.08-.41-1.49 0-.2.2-.3.46-.3.74 0 .28.1.54.3.74.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49zm2.83-2.83c-1.56-1.56-4.1-1.56-5.66 0-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0zm2.83-2.83c-3.12-3.12-8.19-3.12-11.31 0-1.56 1.56-1.56 4.1 0 5.66.78.78 2.05.78 2.83 0 1.56-1.56 1.56-4.1 0-5.66z" />
             </svg>
             <div className="flex items-center gap-0.5">
               <div className="w-6 h-3 border-2 border-foreground rounded-sm relative">
@@ -319,6 +318,7 @@ export default function EcoKashApp() {
               hasBin={hasBin}
               collectionData={collectionData}
               onSimulateCollection={handleCollection}
+              monthlyEarnings={monthlyEarnings}
             />
           )}
           {currentScreen === "deposit" && <DepositScreen onBack={() => setCurrentScreen("home")} />}
@@ -397,7 +397,7 @@ export default function EcoKashApp() {
                 className={`flex flex-col items-center gap-1 transition-colors ${currentScreen === "impact" ? "text-primary" : "text-muted-foreground"}`}
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
+                  <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a.75.75 0 01-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z" />
                 </svg>
                 <span className="text-xs font-medium font-sans">Impact</span>
               </button>

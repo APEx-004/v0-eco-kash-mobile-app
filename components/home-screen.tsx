@@ -29,6 +29,7 @@ interface HomeScreenProps {
   hasBin: boolean
   collectionData: CollectionData
   onSimulateCollection: (amount: number, itemCount: number) => void
+  monthlyEarnings: number
 }
 
 export function HomeScreen({
@@ -39,11 +40,23 @@ export function HomeScreen({
   hasBin,
   collectionData,
   onSimulateCollection,
+  monthlyEarnings,
 }: HomeScreenProps) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showBinPopup, setShowBinPopup] = useState(!hasBin)
+  const [isCollectionExpanded, setIsCollectionExpanded] = useState(true)
 
   const firstName = userData?.fullName.split(" ")[0] || "User"
+
+  const getNextMonthDate = () => {
+    const today = new Date()
+    const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())
+    return nextMonth.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+  }
 
   return (
     <div className="h-full overflow-y-auto pb-24 text-[rgba(217,237,212,1)] bg-[rgba(216,237,211,1)] text-left">
@@ -120,7 +133,6 @@ export function HomeScreen({
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40 text-center py-0 border-0" />
 
-          {/* Recycling Icon */}
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex items-start justify-between">
               <div>
@@ -141,11 +153,11 @@ export function HomeScreen({
             <div className="grid grid-cols-2 gap-6 pt-4 border-t border-white/20">
               <div>
                 <p className="text-xs text-white/70 mb-1">Recyclables</p>
-                <p className="text-xl font-bold text-white">142 items</p>
+                <p className="text-xl font-bold text-white">{collectionData.recyclablesCount} items</p>
               </div>
               <div>
                 <p className="text-xs text-white/70 mb-1">This Month</p>
-                <p className="text-xl font-bold text-background">+$8.30</p>
+                <p className="text-xl font-bold text-background">+${monthlyEarnings.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -153,54 +165,75 @@ export function HomeScreen({
 
         {hasBin && (
           <Card className="mt-6 p-6 rounded-3xl border-2 border-primary/20">
-            <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => setIsCollectionExpanded(!isCollectionExpanded)}
+              className="w-full flex items-center justify-between mb-4"
+            >
               <h3 className="text-lg font-bold">Collection Summary</h3>
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <svg
+                  className={`w-5 h-5 transition-transform ${isCollectionExpanded ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
-            </div>
+            </button>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-primary/5 p-4 rounded-2xl">
-                <p className="text-sm text-muted-foreground mb-1">Total Earned</p>
-                <p className="text-2xl font-bold text-primary">${collectionData.amount.toFixed(2)}</p>
-              </div>
-              <div className="bg-primary/5 p-4 rounded-2xl">
-                <p className="text-sm text-muted-foreground mb-1">Items Collected</p>
-                <p className="text-2xl font-bold text-primary">{collectionData.recyclablesCount}</p>
-              </div>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              {collectionData.lastCollectionDate && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Last Collection:</span>
-                  <span className="font-semibold">{collectionData.lastCollectionDate}</span>
+            {isCollectionExpanded && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-primary/5 p-4 rounded-2xl">
+                    <p className="text-sm text-muted-foreground mb-1">Total Earned</p>
+                    <p className="text-2xl font-bold text-primary">${collectionData.amount.toFixed(2)}</p>
+                  </div>
+                  <div className="bg-primary/5 p-4 rounded-2xl">
+                    <p className="text-sm text-muted-foreground mb-1">Items Collected</p>
+                    <p className="text-2xl font-bold text-primary">{collectionData.recyclablesCount}</p>
+                  </div>
                 </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Next Collection:</span>
-                <span className="font-semibold text-primary">{collectionData.nextCollectionDate}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Collection Interval:</span>
-                <span className="font-semibold">Every 2 weeks</span>
-              </div>
-            </div>
 
-            <Button
-              onClick={() => onSimulateCollection(5.5, 12)}
-              className="w-full mt-4 h-10 font-semibold rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
-            >
-              Simulate Collection (Testing)
-            </Button>
+                <div className="space-y-2 text-sm">
+                  {collectionData.lastCollectionDate && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Last Collection:</span>
+                      <span className="font-semibold">{collectionData.lastCollectionDate}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Next Collection:</span>
+                    <span className="font-semibold text-primary">{collectionData.nextCollectionDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Next Month:</span>
+                    <span className="font-semibold text-primary">{getNextMonthDate()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Collection Interval:</span>
+                    <span className="font-semibold">Every 2 weeks</span>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => onSimulateCollection(5.5, 12)}
+                  className="w-full mt-4 h-10 font-semibold rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
+                >
+                  Simulate Collection (Testing)
+                </Button>
+              </div>
+            )}
           </Card>
         )}
 
@@ -256,7 +289,10 @@ export function HomeScreen({
             </button>
 
             {/* RVM Location */}
-            <button className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors">
+            <button
+              onClick={() => onNavigate("deposit")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
               <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
