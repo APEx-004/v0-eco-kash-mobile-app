@@ -135,7 +135,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
               onBack()
             }
           }}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-[rgba(217,237,212,1)]"
+          className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -145,7 +145,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 pb-24 bg-[rgba(217,237,212,1)]">
+      <div className="flex-1 overflow-y-auto p-6 pb-24 bg-background">
         {step === "locations" && (
           <div className="space-y-4">
             <Card className="p-6 rounded-3xl bg-primary/10 border-primary/20">
@@ -408,7 +408,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
               </div>
             </Card>
 
-            <Button onClick={onBack} className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground" size="lg">
+            <Button onClick={onBack} className="w-full h-14 text-lg font-semibold rounded-2xl" size="lg">
               Back to Home
             </Button>
           </div>
