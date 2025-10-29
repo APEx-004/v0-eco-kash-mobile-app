@@ -289,7 +289,7 @@ export function ServiceRequestScreen({ onBack, userData, hasBin = false, onBinPu
             <Button
               onClick={() => setStep(2)}
               disabled={!formData.name || !formData.address}
-              className="w-full h-12 font-semibold rounded-xl bg-foreground"
+              className="w-full h-12 font-semibold rounded-xl bg-foreground hover:bg-foreground/90"
             >
               Continue
             </Button>
@@ -389,7 +389,7 @@ export function ServiceRequestScreen({ onBack, userData, hasBin = false, onBinPu
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                        d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
                       />
                     </svg>
                   </div>
@@ -521,7 +521,7 @@ export function ServiceRequestScreen({ onBack, userData, hasBin = false, onBinPu
               <Button
                 onClick={handleSubmit}
                 disabled={!formData.agreedToTerms}
-                className="flex-1 h-12 rounded-xl font-semibold bg-black hover:bg-black/90"
+                className="flex-1 h-12 rounded-xl font-semibold bg-black hover:bg-black/80"
               >
                 Complete Payment
               </Button>

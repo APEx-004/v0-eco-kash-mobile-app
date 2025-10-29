@@ -29,10 +29,10 @@ export function WalletScreen({ onBack, walletBalance, notifications }: WalletScr
             <p className="text-sm opacity-90 mb-2">Available Balance</p>
             <h2 className="text-5xl font-bold mb-6">${walletBalance.toFixed(2)}</h2>
             <div className="flex gap-3">
-              <Button className="flex-1 h-12 bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-2xl font-semibold">
+              <Button className="flex-1 h-12 bg-primary-foreground text-primary hover:bg-primary-foreground/80 rounded-2xl font-semibold">
                 Withdraw
               </Button>
-              <Button className="flex-1 h-12 bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30 rounded-2xl font-semibold">
+              <Button className="flex-1 h-12 bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/25 rounded-2xl font-semibold">
                 Convert
               </Button>
             </div>

@@ -298,7 +298,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={1.5}
-                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1v-2a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
                       />
                     </svg>
                   </div>
@@ -335,7 +335,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
             <Button
               onClick={handleStartScan}
               disabled={isScanning}
-              className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground"
+              className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground hover:bg-foreground/90"
               size="lg"
             >
               {isScanning ? "Scanning..." : "Scan QR Code"}
@@ -408,7 +408,11 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
               </div>
             </Card>
 
-            <Button onClick={onBack} className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground" size="lg">
+            <Button
+              onClick={onBack}
+              className="w-full h-14 text-lg font-semibold rounded-2xl bg-foreground hover:bg-foreground/90"
+              size="lg"
+            >
               Back to Home
             </Button>
           </div>

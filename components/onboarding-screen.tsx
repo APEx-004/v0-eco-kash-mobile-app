@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { ChevronLeft } from "lucide-react"
 
 interface OnboardingScreenProps {
   step: number
@@ -13,18 +14,22 @@ interface OnboardingScreenProps {
 const onboardingData = [
   {
     title: "Segregate your trash",
-    description: "Sort your waste easily at home.",
-    image: "/person-sorting-waste-into-labeled-bins-plastic-org.jpg",
+    description: "Sort your waste easily at home into the right bins.",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/woman-recycling-better-environment%20%282%29-lrWEXx3p3zctJtCyAZaZ5PoxSLsofm.jpg",
+    isFullScreen: true,
   },
   {
     title: "Recycle your trash",
     description: "Turn waste into something useful.",
     image: "/recyclables-being-processed-turned-into-new-produc.jpg",
+    isFullScreen: false,
   },
   {
     title: "Earn from your waste",
     description: "Earn money or rewards from your recyclables.",
     image: "/person-receiving-cash-digital-rewards-money-from-r.jpg",
+    isFullScreen: false,
   },
 ]
 
@@ -65,6 +70,57 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
   }
 
   const isLastSlide = step === onboardingData.length - 1
+
+  if (currentStep.isFullScreen) {
+    return (
+      <div
+        className="h-full relative overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Full-screen background image */}
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${currentStep.image})` }} />
+
+        {/* Gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+
+        {/* Content overlay */}
+        <div className="relative h-full flex flex-col justify-between p-8 pb-12">
+          {/* Top section with title and description */}
+          <div className="pt-8 space-y-4 animate-fade-in-up">
+            <h1 className="text-4xl font-bold text-white text-balance leading-tight drop-shadow-lg">
+              {currentStep.title}
+            </h1>
+            <p className="text-lg text-white/90 text-pretty leading-relaxed drop-shadow-md max-w-sm">
+              {currentStep.description}
+            </p>
+          </div>
+
+          {/* Bottom section with progress and swipe indicator */}
+          <div className="space-y-6">
+            {/* Progress Indicators */}
+            <div className="flex justify-center gap-2">
+              {onboardingData.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === step ? "w-8 bg-white" : "w-2 bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Swipe indicator */}
+            <div className="flex items-center justify-center gap-2 text-white/80">
+              <p className="text-sm font-medium">Swipe left to continue</p>
+              <ChevronLeft className="w-5 h-5 rotate-180 animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -108,7 +164,10 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
             Get Started
           </Button>
         ) : (
-          <p className="text-sm text-muted-foreground">Swipe left to continue</p>
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+            <p className="text-sm">Swipe left to continue</p>
+            <ChevronLeft className="w-4 h-4 rotate-180 animate-pulse" />
+          </div>
         )}
       </div>
     </div>

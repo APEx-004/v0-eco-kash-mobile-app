@@ -295,7 +295,10 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
                   </button>
                 </div>
               </div>
-              <Button onClick={handlePasswordChange} className="w-full h-12 font-semibold rounded-md bg-black">
+              <Button
+                onClick={handlePasswordChange}
+                className="w-full h-12 font-semibold rounded-md bg-black hover:bg-black/90"
+              >
                 Update Password
               </Button>
             </div>
@@ -370,7 +373,10 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
               <p className="text-sm font-semibold mb-1">Upload ID Document</p>
               <p className="text-xs text-muted-foreground">PNG, JPG or PDF (max 5MB)</p>
             </div>
-            <Button onClick={handleKYCSubmit} className="w-full h-12 font-semibold rounded-md bg-popover-foreground">
+            <Button
+              onClick={handleKYCSubmit}
+              className="w-full h-12 font-semibold rounded-md bg-popover-foreground hover:bg-popover-foreground/90"
+            >
               Submit for Verification
             </Button>
           </Card>
@@ -476,7 +482,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
             <h3 className="font-semibold text-lg">Still need help?</h3>
             <Button
               onClick={() => setActiveScreen("contact-support")}
-              className="w-full h-12 font-semibold rounded-md bg-foreground"
+              className="w-full h-12 font-semibold rounded-md bg-foreground hover:bg-foreground/90"
             >
               Contact Support
             </Button>
@@ -801,7 +807,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5a2 2 0 01-2 2z"
                   />
                 </svg>
               </div>
