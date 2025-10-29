@@ -85,7 +85,7 @@ export function HomeScreen({
                     setShowBinPopup(false)
                     onNavigate("service-request")
                   }}
-                  className="w-full h-12 font-semibold rounded-xl bg-primary"
+                  className="w-full h-12 font-semibold rounded-xl bg-black"
                 >
                   Get Bin Now
                 </Button>
