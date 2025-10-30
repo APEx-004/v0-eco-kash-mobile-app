@@ -432,7 +432,7 @@ export function ServiceRequestScreen({ onBack, userData, hasBin = false, onBinPu
               <Button
                 onClick={() => setStep(4)}
                 disabled={!formData.paymentMethod}
-                className="flex-1 h-12 rounded-xl font-semibold bg-card-foreground"
+                className="flex-1 h-12 rounded-xl font-semibold bg-card-foreground hover:bg-card-foreground/90"
               >
                 Continue
               </Button>

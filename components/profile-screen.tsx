@@ -711,14 +711,10 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
 
           {/* User Info - Left aligned */}
           <div className="flex-1 flex flex-col justify-center">
-            <h2 className="text-lg font-bold mb-2 text-left leading-tight">{userData?.fullName || "Guest User"}</h2>
+            <h2 className="text-lg font-bold text-left leading-tight leading-6 mt-0 mb-4 px-0">{userData?.fullName || "Guest User"}</h2>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs whitespace-nowrap">
-                Eco Champion
-              </span>
-              <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground rounded-full font-medium text-xs whitespace-nowrap">
-                Level 5
-              </span>
+              
+              
             </div>
           </div>
         </Card>
