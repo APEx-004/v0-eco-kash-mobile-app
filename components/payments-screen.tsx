@@ -102,7 +102,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
 
   if (showSuccess) {
     return (
-      <div className="h-full flex flex-col items-center justify-center p-8 bg-background">
+      <div className="h-full flex flex-col items-center justify-center p-8 bg-[#d9edd4]">
         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
           <svg className="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
