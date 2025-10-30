@@ -4,7 +4,6 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createClient } from "@/lib/supabase/client"
 
 interface SignupScreenProps {
   onSignup: (userData: {
@@ -40,35 +39,19 @@ export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
     }
 
     setIsLoading(true)
-    const supabase = createClient()
     const isEmail = formData.contact.includes("@")
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: isEmail ? formData.contact : `${formData.contact}@ecokash.sl`,
+      // Demo mode - simulate successful signup
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      onSignup({
+        fullName: formData.fullName,
+        email: isEmail ? formData.contact : "",
+        phone: isEmail ? "" : formData.contact,
         password: formData.password,
-        options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || window.location.origin,
-          data: {
-            full_name: formData.fullName,
-            email: isEmail ? formData.contact : "",
-            phone: isEmail ? "" : formData.contact,
-            address: formData.address,
-          },
-        },
+        location: formData.address,
       })
-
-      if (signUpError) throw signUpError
-
-      if (data.user) {
-        onSignup({
-          fullName: formData.fullName,
-          email: isEmail ? formData.contact : "",
-          phone: isEmail ? "" : formData.contact,
-          password: formData.password,
-          location: formData.address,
-        })
-      }
     } catch (err: any) {
       setError(err.message || "An error occurred during signup")
     } finally {

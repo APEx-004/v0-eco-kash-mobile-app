@@ -4,7 +4,6 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createClient } from "@/lib/supabase/client"
 
 interface LoginScreenProps {
   onLogin: (email: string, password: string) => void
@@ -23,22 +22,12 @@ export function LoginScreen({ onLogin, onSwitchToSignup }: LoginScreenProps) {
     setError(null)
 
     setIsLoading(true)
-    const supabase = createClient()
 
     try {
-      // Handle phone number login by converting to email format
-      const loginEmail = email.includes("@") ? email : `${email}@ecokash.sl`
+      // Demo mode - simulate successful login
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password,
-      })
-
-      if (signInError) throw signInError
-
-      if (data.user) {
-        onLogin(email, password)
-      }
+      onLogin(email, password)
     } catch (err: any) {
       setError(err.message || "Invalid email/phone or password")
     } finally {
@@ -105,7 +94,7 @@ export function LoginScreen({ onLogin, onSwitchToSignup }: LoginScreenProps) {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 12 5c4.478 0 8.268-2.943 12-5a9.97 9.97 0 01-1.563-3.029m0 0L21 21"
                     />
                   </svg>
                 ) : (

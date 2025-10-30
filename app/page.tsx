@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { OnboardingScreen } from "@/components/onboarding-screen"
 import { SignupScreen } from "@/components/signup-screen"
 import { LoginScreen } from "@/components/login-screen"
@@ -76,47 +75,11 @@ export default function EcoKashApp() {
   const [monthlyEarnings, setMonthlyEarnings] = useState(0)
 
   useEffect(() => {
-    const supabase = createClient()
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUserId(session.user.id)
-        setIsAuthenticated(true)
-        loadUserProfile(session.user.id)
-        setCurrentScreen("home")
-      }
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUserId(session.user.id)
-        setIsAuthenticated(true)
-        loadUserProfile(session.user.id)
-      } else {
-        setUserId(null)
-        setIsAuthenticated(false)
-        setUserData(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
+    // Demo mode - no Supabase authentication needed
   }, [])
 
   const loadUserProfile = async (uid: string) => {
-    const supabase = createClient()
-    const { data, error } = await supabase.from("profiles").select("*").eq("id", uid).single()
-
-    if (data) {
-      setUserData({
-        fullName: data.full_name,
-        email: data.email || "",
-        phone: data.phone || "",
-        location: data.address || "",
-      })
-      setWalletBalance(Number.parseFloat(data.wallet_balance) || 0)
-    }
+    // Demo mode - profile data managed locally
   }
 
   const handleOnboardingComplete = () => {
@@ -149,8 +112,7 @@ export default function EcoKashApp() {
   }
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    // Demo mode - no Supabase signOut needed
     setUserData(null)
     setIsAuthenticated(false)
     setCurrentScreen("login")
