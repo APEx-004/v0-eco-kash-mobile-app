@@ -9,7 +9,7 @@ import { useState } from "react"
 interface PaymentsScreenProps {
   onBack: () => void
   walletBalance: number
-  onPayment: (amount: number, service: string, provider: string) => void
+  onPayment: (amount: number, service: string, provider: string, token?: string) => void
 }
 
 export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScreenProps) {
@@ -20,12 +20,24 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
   const [mobileNumber, setMobileNumber] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
+  const [generatedToken, setGeneratedToken] = useState("")
 
   const topupProviders = [
     { id: "orange", name: "Orange Money", logo: "/images/orange-money-logo.jpg" },
     { id: "africell", name: "Africell Money", logo: "/africell-money-logo.jpg" },
     { id: "qcell", name: "Q-Cell Money", logo: "/qcell-money-logo.jpg" },
   ]
+
+  const electricityProviders = [{ id: "edsa", name: "EDSA (Electricity Distribution)", icon: "⚡" }]
+
+  const generateToken = (): string => {
+    const segments = []
+    for (let i = 0; i < 5; i++) {
+      const segment = Math.floor(1000 + Math.random() * 9000).toString()
+      segments.push(segment)
+    }
+    return segments.join("-")
+  }
 
   const handlePayment = () => {
     const paymentAmount = Number.parseFloat(amount)
@@ -45,16 +57,29 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
       return
     }
 
-    const service = selectedCategory === "topup" ? "Top-up" : "Electricity Bill"
-    const provider = selectedCategory === "topup" ? selectedProvider || "" : "EDSA"
-    onPayment(paymentAmount, service, provider)
+    if (selectedCategory === "bills" && !meterNumber) {
+      alert("Please enter a meter number")
+      return
+    }
+
+    let token = ""
+    if (selectedCategory === "bills") {
+      token = generateToken()
+      setGeneratedToken(token)
+    }
+
+    const service = selectedCategory === "topup" ? "Top-up" : "Electricity Token"
+    const providerName =
+      selectedCategory === "topup"
+        ? topupProviders.find((p) => p.id === selectedProvider)?.name || ""
+        : electricityProviders.find((p) => p.id === selectedProvider)?.name || ""
+
+    onPayment(paymentAmount, service, providerName, token)
 
     if (selectedCategory === "topup") {
-      setSuccessMessage(
-        `Successfully topped up ${mobileNumber} with ${selectedProvider} for $${paymentAmount.toFixed(2)}`,
-      )
+      setSuccessMessage(`Successfully topped up ${mobileNumber} with ${providerName} for $${paymentAmount.toFixed(2)}`)
     } else {
-      setSuccessMessage(`Successfully paid $${paymentAmount.toFixed(2)} for EDSA electricity`)
+      setSuccessMessage(`Token sent to notifications! Meter: ${meterNumber} • Amount: $${paymentAmount.toFixed(2)}`)
     }
 
     setShowSuccess(true)
@@ -66,10 +91,15 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
       setShowSuccess(false)
       setSelectedProvider(null)
       setSelectedCategory(null)
-    }, 3000)
+      setGeneratedToken("")
+    }, 4000)
   }
 
-  // Success popup
+  const handleCopyToken = () => {
+    navigator.clipboard.writeText(generatedToken.replace(/-/g, ""))
+    alert("Token copied to clipboard!")
+  }
+
   if (showSuccess) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-8 bg-background">
@@ -79,15 +109,45 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
           </svg>
         </div>
         <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
-        <p className="text-center text-muted-foreground">{successMessage}</p>
+        <p className="text-center text-muted-foreground mb-4">{successMessage}</p>
+
+        {generatedToken && (
+          <Card className="p-6 rounded-2xl w-full max-w-md space-y-4 mt-4">
+            <div>
+              <Label className="text-xs text-muted-foreground mb-2 block">Your Electricity Token</Label>
+              <div className="p-4 rounded-xl bg-primary/5 border-2 border-primary/20">
+                <p className="text-xl font-mono font-bold text-center tracking-wider text-primary break-all">
+                  {generatedToken}
+                </p>
+              </div>
+              <Button
+                onClick={handleCopyToken}
+                variant="outline"
+                className="w-full mt-3 h-10 rounded-xl font-semibold bg-transparent"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                Copy Token
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">Token also sent to your notifications</p>
+          </Card>
+        )}
       </div>
     )
   }
 
-  // Payment form for selected provider
   if (selectedProvider) {
     const isTopup = selectedCategory === "topup"
-    const provider = isTopup ? topupProviders.find((p) => p.id === selectedProvider) : null
+    const provider = isTopup
+      ? topupProviders.find((p) => p.id === selectedProvider)
+      : electricityProviders.find((p) => p.id === selectedProvider)
 
     return (
       <div className="h-full flex flex-col bg-background">
@@ -100,7 +160,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold">{isTopup ? provider?.name : "EDSA Electricity"}</h1>
+          <h1 className="text-2xl font-bold">{provider?.name}</h1>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
@@ -150,11 +210,34 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
               />
             </div>
 
+            {!isTopup && (
+              <div className="grid grid-cols-5 gap-2">
+                {[5, 10, 20, 50, 100].map((amt) => (
+                  <button
+                    key={amt}
+                    onClick={() => setAmount(amt.toString())}
+                    className="h-10 rounded-xl border-2 border-border hover:border-primary hover:bg-primary/5 font-semibold text-sm transition-all"
+                  >
+                    ${amt}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {!isTopup && amount && (
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Estimated Units</span>
+                  <span className="font-bold text-primary">{(Number.parseFloat(amount) * 10).toFixed(0)} kWh</span>
+                </div>
+              </div>
+            )}
+
             <Button
               onClick={handlePayment}
               className="w-full h-12 rounded-xl font-semibold bg-[rgba(12,11,11,1)] hover:bg-[rgba(12,11,11,0.9)] text-white"
             >
-              Confirm Payment
+              {isTopup ? "Confirm Payment" : "Purchase Token"}
             </Button>
           </div>
         </div>
@@ -162,7 +245,6 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
     )
   }
 
-  // Category selection (topup or bills)
   if (selectedCategory) {
     const isTopup = selectedCategory === "topup"
 
@@ -177,60 +259,68 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 className="text-2xl font-bold">{isTopup ? "Top-up Options" : "Bill Payments"}</h1>
+          <h1 className="text-2xl font-bold">{isTopup ? "Top-up Options" : "Electricity Providers"}</h1>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-4 bg-[rgba(217,237,212,1)]">
-          {isTopup ? (
-            topupProviders.map((provider) => (
-              <Card
-                key={provider.id}
-                className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-all"
-                onClick={() => setSelectedProvider(provider.id)}
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={provider.logo || "/placeholder.svg"}
-                    alt={provider.name}
-                    className="w-16 h-16 object-contain rounded-xl"
-                  />
-                  <div className="flex-1">
-                    <p className="font-semibold">{provider.name}</p>
-                    <p className="text-sm text-muted-foreground">Mobile money top-up</p>
+          {isTopup
+            ? topupProviders.map((provider) => (
+                <Card
+                  key={provider.id}
+                  className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-all"
+                  onClick={() => setSelectedProvider(provider.id)}
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={provider.logo || "/placeholder.svg"}
+                      alt={provider.name}
+                      className="w-16 h-16 object-contain rounded-xl"
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{provider.name}</p>
+                      <p className="text-sm text-muted-foreground">Mobile money top-up</p>
+                    </div>
+                    <svg
+                      className="w-5 h-5 text-muted-foreground"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
-                  <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Card>
-            ))
-          ) : (
-            <Card
-              className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-all"
-              onClick={() => setSelectedProvider("edsa")}
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold">EDSA Electricity</p>
-                  <p className="text-sm text-muted-foreground">Pay your electricity bill</p>
-                </div>
-                <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Card>
-          )}
+                </Card>
+              ))
+            : electricityProviders.map((provider) => (
+                <Card
+                  key={provider.id}
+                  className="p-4 rounded-2xl cursor-pointer hover:border-primary transition-all"
+                  onClick={() => setSelectedProvider(provider.id)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-3xl">
+                      {provider.icon}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold">{provider.name}</p>
+                      <p className="text-sm text-muted-foreground">Prepaid electricity tokens</p>
+                    </div>
+                    <svg
+                      className="w-5 h-5 text-muted-foreground"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Card>
+              ))}
         </div>
       </div>
     )
   }
 
-  // Main payments screen
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="p-6 flex items-center gap-4 border-b border-border bg-[rgba(217,237,212,1)]">

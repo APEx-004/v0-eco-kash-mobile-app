@@ -916,7 +916,7 @@ export function ProfileScreen({ onBack, userData, onLogout, onNavigateToServiceR
               <p className="text-sm text-muted-foreground mb-3 text-left">
                 Verify your identity to unlock higher withdrawal limits and exclusive rewards
               </p>
-              <Button className="h-10 font-semibold tracking-tight rounded-sm text-left">Start Verification</Button>
+              <Button className="h-10 font-semibold tracking-tight rounded-sm text-center">Start Verification</Button>
             </div>
           </div>
         </Card>
