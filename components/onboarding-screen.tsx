@@ -15,7 +15,7 @@ const onboardingData = [
   {
     title: "Segregate your trash",
     description: "Sort your waste easily at home into the right bins.",
-    image: "/recyclables-being-sorted-into-different-bins-cate.jpg",
+    image: "/person-sorting-waste-into-labeled-bins-plastic-org.jpg",
     isFullScreen: false,
   },
   {
@@ -84,6 +84,10 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
             src={currentStep.image || "/placeholder.svg"}
             alt={currentStep.title}
             className="w-72 h-72 object-contain rounded-3xl"
+            onError={(e) => {
+              console.log("[v0] Image failed to load:", currentStep.image)
+              e.currentTarget.src = "/placeholder.svg"
+            }}
           />
         </div>
         <div className="space-y-4 animate-fade-in-up animation-delay-200">
