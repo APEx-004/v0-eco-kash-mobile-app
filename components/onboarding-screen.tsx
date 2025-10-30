@@ -13,17 +13,17 @@ interface OnboardingScreenProps {
 
 const onboardingData = [
   {
-    title: "Sort. Scan. Earn.",
+    title: "Segregate",
     description: "Transform your recyclables into rewards with a simple scan at any RVM location.",
     image: "/person-sorting-waste-into-labeled-bins-plastic-org.jpg",
   },
   {
-    title: "Track Your Impact",
+    title: "Recycle",
     description: "Watch your environmental contribution grow with real-time blockchain verification.",
     image: "/recyclables-being-processed-turned-into-new-produc.jpg",
   },
   {
-    title: "Instant Rewards",
+    title: "Earn",
     description: "Get paid immediately for every recyclable. Your wallet, your planet, your future.",
     image: "/person-receiving-cash-digital-rewards-money-from-r.jpg",
   },
@@ -138,7 +138,7 @@ export function OnboardingScreen({ step, onNext, onComplete }: OnboardingScreenP
         {isLastSlide ? (
           <Button
             onClick={onComplete}
-            className="w-full bg-gray-900 text-white hover:bg-gray-800 h-14 rounded-2xl font-semibold text-base shadow-lg shadow-gray-900/20 transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full text-white hover:bg-gray-800 h-14 rounded-2xl font-semibold text-base shadow-lg shadow-gray-900/20 transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] bg-black"
           >
             Get Started
           </Button>

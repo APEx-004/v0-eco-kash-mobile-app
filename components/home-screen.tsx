@@ -16,7 +16,8 @@ interface HomeScreenProps {
       | "charity"
       | "transfer"
       | "payments"
-      | "service-request",
+      | "service-request"
+      | "electricity",
   ) => void
   userData?: {
     fullName: string
@@ -309,6 +310,17 @@ export function HomeScreen({
                 />
               </svg>
               <span className="text-xs text-foreground text-center leading-tight font-black">RVM Location</span>
+            </button>
+
+            {/* Electricity */}
+            <button
+              onClick={() => onNavigate("electricity")}
+              className="w-[99px] h-[94px] rounded-2xl bg-card border border-border flex flex-col items-center justify-center gap-2 hover:bg-accent/50 transition-colors"
+            >
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-xs text-foreground text-center leading-tight font-black">Electricity</span>
             </button>
           </div>
         </div>

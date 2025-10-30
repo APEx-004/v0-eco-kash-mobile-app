@@ -15,6 +15,7 @@ import { CharityScreen } from "@/components/charity-screen"
 import { TransferScreen } from "@/components/transfer-screen"
 import { PaymentsScreen } from "@/components/payments-screen"
 import { ServiceRequestScreen } from "@/components/service-request-screen"
+import { ElectricityScreen } from "@/components/electricity-screen"
 
 type UserData = {
   fullName: string
@@ -57,6 +58,7 @@ export default function EcoKashApp() {
     | "transfer"
     | "payments"
     | "service-request"
+    | "electricity"
   >("onboarding")
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [userData, setUserData] = useState<UserData>(null)
@@ -222,6 +224,19 @@ export default function EcoKashApp() {
     })
   }
 
+  const handleElectricityPurchase = (amount: number, meterNumber: string, provider: string, token: string) => {
+    setWalletBalance((prev) => prev - amount)
+    const signature = generateSolanaSignature()
+    addNotification({
+      type: "payment",
+      title: `Electricity Token`,
+      description: `${provider} - Meter: ${meterNumber}\nToken: ${token}`,
+      amount: `-$${amount.toFixed(2)}`,
+      icon: "⚡",
+      solanaSignature: signature,
+    })
+  }
+
   const generateSolanaSignature = (): string => {
     const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     let signature = ""
@@ -331,6 +346,13 @@ export default function EcoKashApp() {
               onBinPurchase={handleBinPurchase}
             />
           )}
+          {currentScreen === "electricity" && (
+            <ElectricityScreen
+              onBack={() => setCurrentScreen("home")}
+              walletBalance={walletBalance}
+              onPurchase={handleElectricityPurchase}
+            />
+          )}
         </div>
 
         {isAuthenticated &&
@@ -342,7 +364,8 @@ export default function EcoKashApp() {
           currentScreen !== "charity" &&
           currentScreen !== "transfer" &&
           currentScreen !== "payments" &&
-          currentScreen !== "service-request" && (
+          currentScreen !== "service-request" &&
+          currentScreen !== "electricity" && (
             <div className="absolute bottom-0 left-0 right-0 h-20 border-t border-border flex items-center justify-around px-4 pb-4 bg-[rgba(217,237,212,1)]">
               <button
                 onClick={() => setCurrentScreen("home")}
