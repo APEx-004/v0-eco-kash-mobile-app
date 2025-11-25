@@ -77,9 +77,11 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
     onPayment(paymentAmount, service, providerName, token)
 
     if (selectedCategory === "topup") {
-      setSuccessMessage(`Successfully topped up ${mobileNumber} with ${providerName} for $${paymentAmount.toFixed(2)}`)
+      setSuccessMessage(
+        `Successfully topped up ${mobileNumber} with ${providerName} for NLE ${paymentAmount.toFixed(2)}`,
+      )
     } else {
-      setSuccessMessage(`Token sent to notifications! Meter: ${meterNumber} • Amount: $${paymentAmount.toFixed(2)}`)
+      setSuccessMessage(`Token sent to notifications! Meter: ${meterNumber} • Amount: NLE ${paymentAmount.toFixed(2)}`)
     }
 
     setShowSuccess(true)
@@ -166,7 +168,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
         <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
           <Card className="p-6 rounded-3xl bg-[rgba(217,237,212,1)]">
             <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
-            <p className="text-3xl font-bold">${walletBalance.toFixed(2)}</p>
+            <p className="text-3xl font-bold">NLE {walletBalance.toFixed(2)}</p>
           </Card>
 
           <div className="space-y-4">
@@ -199,7 +201,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount ($)</Label>
+              <Label htmlFor="amount">Amount (NLE)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -218,7 +220,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
                     onClick={() => setAmount(amt.toString())}
                     className="h-10 rounded-xl border-2 border-border hover:border-primary hover:bg-primary/5 font-semibold text-sm transition-all"
                   >
-                    ${amt}
+                    NLE {amt}
                   </button>
                 ))}
               </div>
@@ -338,7 +340,7 @@ export function PaymentsScreen({ onBack, walletBalance, onPayment }: PaymentsScr
       <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-6 bg-[rgba(217,237,212,1)]">
         <Card className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5">
           <p className="text-sm text-muted-foreground mb-1">Available Balance</p>
-          <p className="text-4xl font-bold">${walletBalance.toFixed(2)}</p>
+          <p className="text-4xl font-bold">NLE {walletBalance.toFixed(2)}</p>
         </Card>
 
         <div className="space-y-4">

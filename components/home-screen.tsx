@@ -138,7 +138,7 @@ export function HomeScreen({
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-white/80">Total Balance</p>
-                <p className="text-4xl font-bold text-white mt-2">${walletBalance.toFixed(2)}</p>
+                <p className="text-4xl font-bold text-white mt-2">NLE {walletBalance.toFixed(2)}</p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -158,7 +158,7 @@ export function HomeScreen({
               </div>
               <div>
                 <p className="text-xs text-white/70 mb-1">This Month</p>
-                <p className="text-xl font-bold text-background">+${monthlyEarnings.toFixed(2)}</p>
+                <p className="text-xl font-bold text-background">+NLE {monthlyEarnings.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -198,7 +198,7 @@ export function HomeScreen({
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-primary/5 p-4 rounded-2xl">
                     <p className="text-sm text-muted-foreground mb-1">Total Earned</p>
-                    <p className="text-2xl font-bold text-primary">${collectionData.amount.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-primary">NLE {collectionData.amount.toFixed(2)}</p>
                   </div>
                   <div className="bg-primary/5 p-4 rounded-2xl">
                     <p className="text-sm text-muted-foreground mb-1">Items Collected</p>

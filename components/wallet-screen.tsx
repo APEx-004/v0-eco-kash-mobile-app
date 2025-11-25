@@ -27,7 +27,7 @@ export function WalletScreen({ onBack, walletBalance, notifications }: WalletScr
         <div className="p-6">
           <Card className="p-8 rounded-3xl bg-primary text-primary-foreground">
             <p className="text-sm opacity-90 mb-2">Available Balance</p>
-            <h2 className="text-5xl font-bold mb-6">${walletBalance.toFixed(2)}</h2>
+            <h2 className="text-5xl font-bold mb-6">NLE {walletBalance.toFixed(2)}</h2>
             <div className="flex gap-3">
               <Button className="flex-1 h-12 bg-primary-foreground text-primary hover:bg-primary-foreground/80 rounded-2xl font-semibold">
                 Withdraw
@@ -60,7 +60,7 @@ export function WalletScreen({ onBack, walletBalance, notifications }: WalletScr
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-semibold">${walletBalance.toFixed(2)}</p>
+                <p className="font-semibold">NLE {walletBalance.toFixed(2)}</p>
                 <p className="text-sm text-success">+12.5%</p>
               </div>
             </div>

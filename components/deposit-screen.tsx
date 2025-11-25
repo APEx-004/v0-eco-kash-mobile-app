@@ -9,10 +9,10 @@ interface DepositScreenProps {
 }
 
 const recyclableTypes = [
-  { id: "plastic", name: "Plastic Bottles", icon: "♻️", rate: "$0.50/item" },
-  { id: "cans", name: "Aluminum Cans", icon: "🥫", rate: "$0.15/item" },
-  { id: "pet", name: "PET Bottles", icon: "🍾", rate: "$0.40/item" },
-  { id: "glass", name: "Glass Bottles", icon: "🍶", rate: "$0.30/item" },
+  { id: "plastic", name: "Plastic Bottles", icon: "♻️", rate: "NLE 0.50/item" },
+  { id: "cans", name: "Aluminum Cans", icon: "🥫", rate: "NLE 0.15/item" },
+  { id: "pet", name: "PET Bottles", icon: "🍾", rate: "NLE 0.40/item" },
+  { id: "glass", name: "Glass Bottles", icon: "🍶", rate: "NLE 0.30/item" },
 ]
 
 const rvmLocations = [
@@ -378,7 +378,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
               <div className="flex items-center justify-between">
                 <span className="font-semibold">Total Earned</span>
                 <span className="text-2xl font-bold text-success">
-                  ${(Number.parseFloat(selectedItem.rate.replace(/[^0-9.]/g, "")) * quantity).toFixed(2)}
+                  NLE {(Number.parseFloat(selectedItem.rate.replace(/[^0-9.]/g, "")) * quantity).toFixed(2)}
                 </span>
               </div>
             </Card>

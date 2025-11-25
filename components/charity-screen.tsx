@@ -108,7 +108,7 @@ export function CharityScreen({ onBack, walletBalance, onDonate }: CharityScreen
           <h1 className="text-2xl font-bold">Support a Cause</h1>
         </div>
         <p className="text-sm opacity-90">Use your EcoKash rewards to support local charities</p>
-        <p className="text-sm font-semibold mt-2">Available Balance: ${walletBalance.toFixed(2)}</p>
+        <p className="text-sm font-semibold mt-2">Available Balance: NLE {walletBalance.toFixed(2)}</p>
       </div>
 
       {/* Charities List */}
@@ -156,7 +156,7 @@ export function CharityScreen({ onBack, walletBalance, onDonate }: CharityScreen
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Donation Amount ($)</label>
+                  <label className="text-sm font-medium mb-2 block">Donation Amount (NLE)</label>
                   <Input
                     type="number"
                     placeholder="Enter amount"
@@ -166,7 +166,7 @@ export function CharityScreen({ onBack, walletBalance, onDonate }: CharityScreen
                     min="0"
                     step="0.01"
                   />
-                  <p className="text-xs text-muted-foreground mt-2">Available: ${walletBalance.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground mt-2">Available: NLE {walletBalance.toFixed(2)}</p>
                 </div>
 
                 <div className="flex gap-3">

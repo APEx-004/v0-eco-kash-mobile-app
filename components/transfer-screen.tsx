@@ -68,7 +68,9 @@ export function TransferScreen({ onBack, walletBalance, onTransfer }: TransferSc
       transferType === "mobile" ? (mobileRecipientType === "agent" ? `Agent ${agentCode}` : phoneNumber) : accountName
     onTransfer(transferAmount, recipient, selectedProvider || "")
 
-    setSuccessMessage(`Successfully transferred $${transferAmount.toFixed(2)} to ${recipient} via ${selectedProvider}!`)
+    setSuccessMessage(
+      `Successfully transferred NLE ${transferAmount.toFixed(2)} to ${recipient} via ${selectedProvider}!`,
+    )
     setShowSuccess(true)
 
     // Reset form after 3 seconds
@@ -98,7 +100,7 @@ export function TransferScreen({ onBack, walletBalance, onTransfer }: TransferSc
           <h1 className="text-2xl font-bold">Transfer</h1>
         </div>
         <p className="text-sm text-muted-foreground mt-2 ml-14">
-          Available Balance: <span className="font-bold text-primary">${walletBalance.toFixed(2)}</span>
+          Available Balance: <span className="font-bold text-primary">NLE {walletBalance.toFixed(2)}</span>
         </p>
       </div>
 
@@ -326,7 +328,7 @@ export function TransferScreen({ onBack, walletBalance, onTransfer }: TransferSc
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="amount">Amount ($)</Label>
+                <Label htmlFor="amount">Amount (NLE)</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -344,7 +346,7 @@ export function TransferScreen({ onBack, walletBalance, onTransfer }: TransferSc
                 onClick={handleTransfer}
                 className="w-full h-12 rounded-xl bg-[rgba(12,11,11,1)] hover:bg-[rgba(12,11,11,0.9)] text-white font-semibold"
               >
-                Transfer ${amount || "0.00"}
+                Transfer NLE {amount || "0.00"}
               </Button>
             </Card>
           </div>

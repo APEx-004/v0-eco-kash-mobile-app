@@ -56,7 +56,7 @@ export function CollectionScreen({ onBack }: CollectionScreenProps) {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Estimated Reward</span>
-              <span className="font-semibold text-success">$5.00 - $7.00</span>
+              <span className="font-semibold text-success">NLE 5.00 - NLE 7.00</span>
             </div>
           </Card>
           <Button onClick={onBack} className="w-full h-14 text-lg font-semibold rounded-2xl" size="lg">
