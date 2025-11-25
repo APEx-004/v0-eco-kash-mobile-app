@@ -18,11 +18,11 @@ interface SignupScreenProps {
 
 export function SignupScreen({ onSignup, onSwitchToLogin }: SignupScreenProps) {
   const [formData, setFormData] = useState({
-    fullName: "",
-    contact: "",
-    address: "",
-    password: "",
-    confirmPassword: "",
+    fullName: "Apex taffy",
+    contact: "lollynfx@gmail.com",
+    address: "ABERDEEN",
+    password: "123456",
+    confirmPassword: "123456",
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
